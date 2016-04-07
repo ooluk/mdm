@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+
+        <!-- Database connection settings -->
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.url">jdbc:postgresql://localhost/test</property>
+        <property name="connection.username">postgres</property>
+        <property name="connection.password">password</property>
+        <property name="hibernate.default_schema">mdm</property>
+
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+
+        <!-- SQL dialect -->
+        <property name="hibernate.dialect">com.ooluk.mdm.hibernate.CustomPostgreSQLDialect</property>
+
+        <!-- Enable Hibernate's automatic session context management -->
+        <property name="current_session_context_class">thread</property>
+        <property name="hbm2ddl.auto">create</property>
+
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+                
+        <property name="hibernate.search.default.directory_provider">filesystem</property>
+        <property name="hibernate.search.default.indexBase">D:/TEMP/fts</property>
+ 
+		<mapping class="com.ooluk.mdm.core.base.data.PropertyGroup"/>  
+		<mapping class="com.ooluk.mdm.core.base.data.DynamicProperty"/> 
+		<mapping class="com.ooluk.mdm.core.base.data.ListValue"/>  
+		
+		<mapping class="com.ooluk.mdm.core.app.data.User"/>           
+		<mapping class="com.ooluk.mdm.core.app.data.Role"/>         
+		<mapping class="com.ooluk.mdm.core.app.data.LabelType"/>      
+		<mapping class="com.ooluk.mdm.core.app.data.Label"/>        
+		<mapping class="com.ooluk.mdm.core.app.data.Tag"/>
+		       
+		<mapping class="com.ooluk.mdm.core.dataobject.data.Namespace"/>     
+		<mapping class="com.ooluk.mdm.core.dataobject.data.DataObject"/>     
+		<mapping class="com.ooluk.mdm.core.dataobject.data.DataObjectSourceMappingKey"/>
+		<mapping class="com.ooluk.mdm.core.dataobject.data.DataObjectSourceMapping"/>   
+		<mapping class="com.ooluk.mdm.core.dataobject.data.DataObjectNote"/>
+		
+		<mapping class="com.ooluk.mdm.core.attribute.data.Attribute"/>        
+		<mapping class="com.ooluk.mdm.core.attribute.data.AttributeSourceMappingKey"/>
+		<mapping class="com.ooluk.mdm.core.attribute.data.AttributeSourceMapping"/>  
+		<mapping class="com.ooluk.mdm.core.attribute.data.AttributeNote"/>  
+		               
+		<mapping class="com.ooluk.mdm.core.index.data.Index"/> 
+		<mapping class="com.ooluk.mdm.core.index.data.IndexAttributeMappingKey"/> 
+		<mapping class="com.ooluk.mdm.core.index.data.IndexAttributeMapping"/>
+
+    </session-factory>
+
+</hibernate-configuration>
