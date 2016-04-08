@@ -204,7 +204,7 @@ public class EntityComparator {
 	
 	public static void verifyEqual(IndexAttributeMapping exp, IndexAttributeMapping act) {
 		verifyEqual(exp.getKey().getIndex(), act.getKey().getIndex());
-		verifyEqual(exp.getKey().getAttribute(), act.getKey().getAttribute());
+		assertEquals(exp.getKey().getAttribute(), act.getKey().getAttribute());
 		verifyEqual(exp.getProperties(), act.getProperties());
 	}
 }

@@ -41,17 +41,24 @@ public class IndexAttributeRepositoryTest extends AbstractRepositoryTest {
 	static class ContextConfiguration {		
 	}
 	
-	private static String NS_NAME = "NS1";
-	private static String OBJ_NAME = "OBJ1";
-	private static String IDX_NAME = "IDX1";
-	
+	private Index getDefaultIndex() {
+		return TestData.getIndex("NS1", "O1", "I1");
+	}
+		
 	/**
 	 * Creates a default index in the database.
 	 * 
 	 * @return created index
 	 */
 	private Index createDefaultIndex() {
-		return super.createIndex(NS_NAME, OBJ_NAME, IDX_NAME);
+		Index idx = getDefaultIndex();
+		DataObject obj = idx.getDataObject();
+		database.insertPropertyGroup(obj.getNamespace().getPropertyGroup(), 1L);
+		database.insertNamespace(obj.getNamespace(), 1L);
+		database.insertDataObject(obj, 1L);
+		database.insertIndex(idx, 1L);
+		return idx;
+		
 	}
 	
 	private IndexAttributeMapping getMapping(Index idx, Attribute attr) {
@@ -60,10 +67,12 @@ public class IndexAttributeRepositoryTest extends AbstractRepositoryTest {
 		return map;
 	}
 	
-	private IndexAttributeMapping createMapping(Index idx, Attribute attr) {
-		IndexAttributeMapping map = getMapping(idx, attr);
-		iaRepository.create(map);
-		super.flushAndEvict(map);
+	private IndexAttributeMapping fetchFromRepository(Index idx, Attribute attr) {
+		Index i = idxRepository.findById(idx.getId());
+		Attribute a = attrRepository.findById(attr.getId());
+		// Need to pass persistent entities
+		IndexAttributeMapping map = iaRepository
+				.findById(new IndexAttributeMappingKey(i, a));
 		return map;
 	}
 		
@@ -77,12 +86,11 @@ public class IndexAttributeRepositoryTest extends AbstractRepositoryTest {
 		
 		// Add attribute to the data object
 		DataObject obj = idx.getDataObject();
-		Attribute a1 = new Attribute(obj, "A-1");
-		attrRepository.create(a1);
-		super.flush();
+		Attribute a1 = new Attribute(obj, "A1");
+		database.insertAttribute(a1, 1L);
 		
 		// Add 1 attribute to the index
-		createMapping(idx, a1);
+		database.insertIndexAttribute(getMapping(idx, a1));
 		super.verifyRowCount(Tables.INDEX_ATTRIBUTE, 1);
 		
 		// Verify
@@ -110,15 +118,15 @@ public class IndexAttributeRepositoryTest extends AbstractRepositoryTest {
 		
 		// Add attribute to the data object
 		DataObject obj = idx.getDataObject();
-		Attribute a1 = new Attribute(obj, "A-1");
-		attrRepository.create(a1);
-		super.flush();
+		Attribute a1 = new Attribute(obj, "A1");
+		database.insertAttribute(a1, 1L);
 		
 		// Add 1 attribute to the index
-		IndexAttributeMapping map = createMapping(idx, a1);
+		database.insertIndexAttribute(getMapping(idx, a1));
 		super.verifyRowCount(Tables.INDEX_ATTRIBUTE, 1);
 		
 		// Update
+		IndexAttributeMapping map = fetchFromRepository(idx, a1);
 		makeChanges(map);
 		iaRepository.update(map);
 		super.flushAndEvict(map);
@@ -126,8 +134,8 @@ public class IndexAttributeRepositoryTest extends AbstractRepositoryTest {
 		// Verify by making same changes to expected
 		IndexAttributeMapping exp = getMapping(idx, a1);
 		makeChanges(exp);
-		Index act = idxRepository.findById(idx.getId());
-		EntityComparator.verifyEqual(exp, act.getAttributes().iterator().next());
+		IndexAttributeMapping act = fetchFromRepository(idx, a1);
+		EntityComparator.verifyEqual(exp, act);
 	}		
 	
 	/*
@@ -139,16 +147,15 @@ public class IndexAttributeRepositoryTest extends AbstractRepositoryTest {
 		
 		// Add attribute to the data object
 		DataObject obj = idx.getDataObject();
-		Attribute a1 = new Attribute(obj, "A-1");
-		attrRepository.create(a1);
-		super.flush();
+		Attribute a1 = new Attribute(obj, "A1");
+		database.insertAttribute(a1, 1L);
 		
 		// Add 1 attribute to the index
-		IndexAttributeMapping map = createMapping(idx, a1);
+		database.insertIndexAttribute(getMapping(idx, a1));
 		super.verifyRowCount(Tables.INDEX_ATTRIBUTE, 1);
 		
 		// Delete mapping
-		map = iaRepository.findById(new IndexAttributeMappingKey(idx, a1)); 
+		IndexAttributeMapping map = fetchFromRepository(idx, a1);
 		iaRepository.delete(map);
 		super.flushAndEvict(map);
 		super.verifyRowCount(Tables.INDEX_ATTRIBUTE, 0);
@@ -163,22 +170,19 @@ public class IndexAttributeRepositoryTest extends AbstractRepositoryTest {
 		
 		// Add attribute to the data object
 		DataObject obj = idx.getDataObject();
-		Attribute a1 = new Attribute(obj, "A-1");
-		attrRepository.create(a1);
-		super.flush();
+		Attribute a1 = new Attribute(obj, "A1");
+		database.insertAttribute(a1, 1L);
 		
 		// Add attributes to the index
-		createMapping(idx, a1);
+		database.insertIndexAttribute(getMapping(idx, a1));
 		// Create new index on a1
-		Index idx2 = new Index("I-2");
+		Index idx2 = new Index("I2");
 		obj.addIndex(idx2);
-		idxRepository.create(idx2);
-		super.flush();
-		createMapping(idx2, a1);
+		database.insertIndex(idx2, 2L);
+		database.insertIndexAttribute(getMapping(idx2, a1));
 		super.verifyRowCount(Tables.INDEX_ATTRIBUTE, 2);
 		
 		// Verify there are 2 indexes on a1
-		super.evict(a1);
 		a1 = attrRepository.findById(a1.getId());
 		assertEquals(2, a1.getIndexes().size());
 		

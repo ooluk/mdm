@@ -19,8 +19,8 @@ import com.ooluk.mdm.core.test.TestUtils;
  * ----------
  * TEST SCOPE
  * ----------
- * - Create an index
  * - Find index by its ID
+ * - Create an index
  * - Update an index
  * - Delete an index
  * - Find a index by its name within a data object

@@ -22,6 +22,7 @@
 		<hibernate-search-version>5.5.2.Final</hibernate-search-version>
 		<jackson-version>2.7.1</jackson-version>
 		<spring-version>4.2.5.RELEASE</spring-version>
+		<dozer-version>5.5.1</dozer-version>
 	</properties>
 
 	<dependencies>
@@ -185,6 +186,12 @@
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-core</artifactId>
 				<version>${jackson-version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.sf.dozer</groupId>
+				<artifactId>dozer</artifactId>
+				<version>${dozer-version}</version>
 			</dependency>
 
 		</dependencies>

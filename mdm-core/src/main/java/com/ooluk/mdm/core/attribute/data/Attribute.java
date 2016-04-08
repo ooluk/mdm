@@ -28,7 +28,7 @@ import com.ooluk.mdm.core.dataobject.data.DataObject;
 import com.ooluk.mdm.core.index.data.IndexAttributeMapping;
 
 /**
- * An attribute could be a column of a database table or a field of a file. An is uniquely
+ * An attribute could be a column of a database table or a field of a file. An attribute is uniquely
  * identified by its name within a data object.
  * 
  * @author Siddhesh Prabhu

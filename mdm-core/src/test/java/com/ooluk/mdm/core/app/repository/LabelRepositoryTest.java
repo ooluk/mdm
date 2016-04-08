@@ -8,7 +8,10 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
 
 import com.ooluk.mdm.core.app.data.Label;
 import com.ooluk.mdm.core.app.data.LabelType;
@@ -40,11 +43,20 @@ import com.ooluk.mdm.core.test.TestUtils;
  * @since  1.0
  *
  */
+@ContextConfiguration
 public class LabelRepositoryTest extends AbstractRepositoryTest {
 
 	@Configuration
-	static class ContextConfiguration {		
+	static class ContextConfiguration {	
+		
+		@Bean
+		public LabelRepository labelRepository() {
+			return new LabelRepositoryImpl();
+		}	
 	}
+	
+	@Autowired
+	private LabelRepository lblRepository;
 	
 	private static String LABEL_TYPE = "type1";
 	private static String LABEL_NAME = "name1";

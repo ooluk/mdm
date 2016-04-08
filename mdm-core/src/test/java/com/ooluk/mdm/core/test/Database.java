@@ -273,7 +273,7 @@ public class Database {
 				.append(map.getKey().getIndex().getId()).append(",")
 				.append(map.getKey().getAttribute().getId()).append(",")
 				.append(quote(json(map.getProperties())));
-		String sql = insertSQL(Tables.ATTRIBUTE_SOURCE, fields, values.toString());
+		String sql = insertSQL(Tables.INDEX_ATTRIBUTE, fields, values.toString());
 		jdbc.execute(sql);
 	}
 }

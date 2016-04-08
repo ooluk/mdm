@@ -22,13 +22,12 @@ import com.ooluk.mdm.core.base.data.DynamicProperty;
  * @since 1.0
  *
  */
-public class DynamicPropertyFieldBridge implements FieldBridge  {	
-	
-	@Override
-	public void set(String name, Object value, Document document,
-			LuceneOptions luceneOptions) {
+public class DynamicPropertyFieldBridge implements FieldBridge {
 
-		DynamicProperties dp = (DynamicProperties)value;
+	@Override
+	public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
+
+		DynamicProperties dp = (DynamicProperties) value;
 		Map<String, Object> map = dp.getAllProperties();
 		for (String key : map.keySet()) {
 			if (isSearchable(key)) {
@@ -46,10 +45,10 @@ public class DynamicPropertyFieldBridge implements FieldBridge  {
 	 * @param key
 	 *            dynamic property key; this is also the key for the item in DynamicProperties.
 	 * 
-	 * @return true if searchable, false otherwise 
+	 * @return true if searchable, false otherwise
 	 */
 	private boolean isSearchable(String key) {
-		// TODO
+		// TODO 
 		return true;
 	}
 }

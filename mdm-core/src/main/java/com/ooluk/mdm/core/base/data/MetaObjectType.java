@@ -35,7 +35,8 @@ public enum MetaObjectType {
 	INDEX,	
 	INDEX_ATTRIBUTE_MAPPING,
 	USER(true),	
-	ROLE(true),	
+	ROLE(true),		
+	LABEL_TYPE(true),
 	LABEL(true),	
 	TAG(true);
 	
