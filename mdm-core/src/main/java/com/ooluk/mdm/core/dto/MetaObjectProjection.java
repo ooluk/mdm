@@ -1,6 +1,6 @@
 package com.ooluk.mdm.core.dto;
 
-import com.ooluk.mdm.core.base.data.DynamicProperties;
+import com.ooluk.mdm.core.meta.DynamicProperties;
 
 /**
  * Common attributes for all meta objects. 

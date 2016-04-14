@@ -1,6 +1,6 @@
 package com.ooluk.mdm.core.service;
 
-import com.ooluk.mdm.core.base.data.MetaObjectType;
+import com.ooluk.mdm.core.meta.MetaObjectType;
 
 /**
  * Exception to indicate a meta object is not found.

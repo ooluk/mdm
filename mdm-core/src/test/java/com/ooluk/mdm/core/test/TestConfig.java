@@ -16,7 +16,7 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.ooluk.mdm.hibernate.CustomPostgreSQLDialect;
+import com.ooluk.mdm.core.hibernate.CustomPostgreSQLDialect;
 
 /**
  * Common Spring configuration for testing.

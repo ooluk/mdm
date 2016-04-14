@@ -5,7 +5,7 @@ import static com.ooluk.mdm.core.test.TestConstants.SCHEMA;
 import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.ooluk.mdm.core.base.data.DynamicProperties;
+import com.ooluk.mdm.core.meta.DynamicProperties;
 
 /**
  * A utility class for database functions.

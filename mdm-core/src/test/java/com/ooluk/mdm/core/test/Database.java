@@ -8,21 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.ooluk.mdm.core.app.data.Label;
-import com.ooluk.mdm.core.app.data.LabelType;
-import com.ooluk.mdm.core.app.data.Tag;
-import com.ooluk.mdm.core.attribute.data.Attribute;
-import com.ooluk.mdm.core.attribute.data.AttributeNote;
-import com.ooluk.mdm.core.attribute.data.AttributeSourceMapping;
-import com.ooluk.mdm.core.base.data.DynamicProperty;
-import com.ooluk.mdm.core.base.data.ListValue;
-import com.ooluk.mdm.core.base.data.PropertyGroup;
-import com.ooluk.mdm.core.dataobject.data.DataObject;
-import com.ooluk.mdm.core.dataobject.data.DataObjectNote;
-import com.ooluk.mdm.core.dataobject.data.DataObjectSourceMapping;
-import com.ooluk.mdm.core.dataobject.data.Namespace;
-import com.ooluk.mdm.core.index.data.Index;
-import com.ooluk.mdm.core.index.data.IndexAttributeMapping;
+import com.ooluk.mdm.core.meta.DynamicProperty;
+import com.ooluk.mdm.core.meta.ListValue;
+import com.ooluk.mdm.core.meta.PropertyGroup;
+import com.ooluk.mdm.core.meta.app.Label;
+import com.ooluk.mdm.core.meta.app.LabelType;
+import com.ooluk.mdm.core.meta.app.Tag;
+import com.ooluk.mdm.core.meta.attribute.Attribute;
+import com.ooluk.mdm.core.meta.attribute.AttributeNote;
+import com.ooluk.mdm.core.meta.attribute.AttributeSourceMapping;
+import com.ooluk.mdm.core.meta.dataobject.DataObject;
+import com.ooluk.mdm.core.meta.dataobject.DataObjectNote;
+import com.ooluk.mdm.core.meta.dataobject.DataObjectSourceMapping;
+import com.ooluk.mdm.core.meta.dataobject.Namespace;
+import com.ooluk.mdm.core.meta.index.Index;
+import com.ooluk.mdm.core.meta.index.IndexAttributeMapping;
 
 /**
  * This class provides methods to insert data into each of the database tables. This allows easy data

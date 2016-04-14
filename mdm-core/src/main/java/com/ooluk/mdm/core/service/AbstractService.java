@@ -3,7 +3,7 @@ package com.ooluk.mdm.core.service;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ooluk.mdm.core.base.data.MetaObjectType;
+import com.ooluk.mdm.core.meta.MetaObjectType;
 
 /**
  * Superclass for all services.

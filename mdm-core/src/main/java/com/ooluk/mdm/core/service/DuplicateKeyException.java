@@ -2,7 +2,7 @@ package com.ooluk.mdm.core.service;
 
 import java.util.Map;
 
-import com.ooluk.mdm.core.base.data.MetaObjectType;
+import com.ooluk.mdm.core.meta.MetaObjectType;
 
 /**
  * Exception to indicate a meta object with the specified key already exists.
