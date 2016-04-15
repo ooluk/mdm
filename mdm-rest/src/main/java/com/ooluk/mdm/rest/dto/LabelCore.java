@@ -23,4 +23,10 @@ public class LabelCore extends MetaObjectProjection {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+
+	@Override
+	public String toString() {
+		return "LabelCore [type=" + type + ", name=" + name + "]";
+	}
 }

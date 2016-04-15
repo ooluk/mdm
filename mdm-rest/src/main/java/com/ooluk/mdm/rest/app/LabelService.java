@@ -2,43 +2,42 @@ package com.ooluk.mdm.rest.app;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ooluk.mdm.core.meta.MetaObjectType;
 import com.ooluk.mdm.core.meta.app.Label;
 import com.ooluk.mdm.core.meta.app.LabelRepository;
-import com.ooluk.mdm.core.meta.app.LabelType;
 import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
-import com.ooluk.mdm.core.service.DuplicateKeyException;
 import com.ooluk.mdm.rest.commons.MetaObjectNotFoundException;
 import com.ooluk.mdm.rest.commons.RestService;
 import com.ooluk.mdm.rest.dto.LabelCore;
+import com.ooluk.mdm.rest.dto.RestResponse;
 
 /**
+ * REST service for label processing
  * 
  * @author Siddhesh Prabhu
- * @since  1.0
+ * @since 1.0
  *
  */
-@Service
-@Path("label")
-@Produces("application/json")
+@RestController
+@RequestMapping ( 
+		value = "/label", 
+		produces = MediaType.APPLICATION_JSON_UTF8_VALUE, 
+		consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
+)
 public class LabelService extends RestService {
 
 	@Autowired
 	private LabelRepository lblRepository;
-	
+
 	@Autowired
 	private LabelTypeRepository typeRepository;
 
@@ -48,106 +47,25 @@ public class LabelService extends RestService {
 	 * @param id
 	 *            label ID
 	 * 
-	 * @return label
+	 * @return {@link com.ooluk.mdm.rest.dto.RestResponse} wrapping a label.
 	 * 
 	 * @throws MetaObjectNotFoundException
 	 *             if a label with the specified ID is not found
 	 */
-	@GET
-	@Path("{id}")
-	public Response getLabelById(@PathParam("id") Long id) throws MetaObjectNotFoundException {
-		
+	@RequestMapping ( value = "/{id}", method = RequestMethod.GET)
+	public RestResponse<LabelCore> getLabelById(@PathVariable ( "id" ) Long id)
+			throws MetaObjectNotFoundException {
+
 		Label label = lblRepository.findById(id);
 		if (label == null) {
 			notFound(MetaObjectType.LABEL, id);
 		}
-		LabelCore entity = mapper.map(label, LabelCore.class);
-		return Response.ok(entity).link("http://www.ooluk.com", "link").build();
-	}
-	
-	/**
-	 * Creates a label.
-	 * 
-	 * @param label
-	 *            label data
-	 *            
-	 * @throws MetaObjectNotFoundException
-	 *             if the label type is not found
-	 * @throws DuplicateKeyException
-	 *             if another label with the same type and name already exists
-	 */
-	public void createLabel(LabelCore label) throws MetaObjectNotFoundException, DuplicateKeyException {
-		Long typeId = label.getType().getId();
+		LabelCore lbl = mapper.map(label, LabelCore.class);
 		
-		// Ensure label type is valid
-		LabelType type = typeRepository.findById(typeId);
-		if (type == null) {
-			notFound(MetaObjectType.LABEL_TYPE, typeId);
-		}
-		
-		// Ensure another label with the name does not already exist
-		Label lbl = lblRepository.findByTypeAndName(type, label.getName());
-		if (lbl != null) {
-			Map<String, Object> key = new HashMap<>();
-			key.put("type", type);
-			key.put("name", label.getName());
-			throw new DuplicateKeyException(MetaObjectType.LABEL, key);
-		}
-		
-		lbl = mapper.map(label, Label.class);
-		lblRepository.create(lbl);
-	}
-
-	/**
-	 * Updates a label.
-	 *
-	 * @param id
-	 *            ID of label to be updated
-	 * @param label
-	 *            updated label data
-	 *            
-	 * @throws MetaObjectNotFoundException
-	 *             if the label is not found
-	 * @throws DuplicateKeyException
-	 *             if another label with the same type and name already exists
-	 */
-	public void updateLabel(Long id, LabelCore label) throws MetaObjectNotFoundException,
-			DuplicateKeyException {
-		
-		Label lbl = lblRepository.findById(id);
-		if (label == null) {
-			notFound(MetaObjectType.LABEL, id);
-		}
-		
-		// Ensure label type is valid
-		Long typeId = label.getType().getId();
-		LabelType type = typeRepository.findById(typeId);
-		if (type == null) {
-			notFound(MetaObjectType.LABEL_TYPE, typeId);
-		}
-
-		lbl.setType(type);
-		lbl.setName(label.getName());
-		lbl.setProperties(label.getProperties());
-		lblRepository.update(lbl);
-	}
-	
-	/**
-	 * Deletes a label.
-	 * 
-	 * @param id
-	 *            ID of the label to be deleted
-	 *            
-	 * @throws MetaObjectNotFoundException
-	 *             if the label is not found
-	 */
-	public void deleteLabel(Long id) throws MetaObjectNotFoundException {
-		
-		Label lbl = lblRepository.findById(id);
-		if (lbl == null) {
-			notFound(MetaObjectType.LABEL, id);
-		}
-		lblRepository.delete(lbl);
+		return new RestResponse<>(lbl)
+				.addLink("self", LabelLinkSupport.buildSelfLink(id))
+				.addLink("children", LabelLinkSupport.buildChildrenLink(id))
+				.addLink("parents", LabelLinkSupport.buildParentsLink(id));
 	}
 	
 	/**
@@ -157,26 +75,19 @@ public class LabelService extends RestService {
 	 *            list of Label(s)
 	 *            
 	 * @return list of LabelCore(s)
+	 * 
+	 * @throws MetaObjectNotFoundException 
 	 */
-	private List<LabelCore> getLabelCoreList(Collection<Label> labelList) {
+	private List<RestResponse<LabelCore>> getLabelCoreList(Collection<Label> labelList) throws MetaObjectNotFoundException {
 
-		List<LabelCore> coreList = new ArrayList<>(labelList.size());
+		List<RestResponse<LabelCore>> coreList = new ArrayList<>(labelList.size());
 		for (Label label : labelList) {
 			LabelCore coreItem = mapper.map(label, LabelCore.class);
-			coreList.add(coreItem);
+			RestResponse<LabelCore> iLabel = (new RestResponse<>(coreItem))
+					.addLink("self", LabelLinkSupport.buildSelfLink(coreItem.getId()));
+			coreList.add(iLabel);
 		}
 		return coreList;
-	}
-
-	/**
-	 * Returns all root labels.
-	 * 
-	 * @return list of labels without parent labels.
-	 */
-	public List<LabelCore> getRootLabels() {
-
-		List<Label> rootLabels = lblRepository.findRootLabels();
-		return getLabelCoreList(rootLabels);
 	}
 
 	/**
@@ -190,14 +101,17 @@ public class LabelService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if the label is not found
 	 */
-	public List<LabelCore> getChildLabels(Long id) throws MetaObjectNotFoundException {
+	@RequestMapping ( value = "/{id}/children", method = RequestMethod.GET)
+	public List<RestResponse<LabelCore>> getChildLabels(@PathVariable ( "id" ) Long id) 
+			throws MetaObjectNotFoundException {
 
 		Label lbl = lblRepository.findById(id);
 		if (lbl == null) {
 			notFound(MetaObjectType.LABEL, id);
 		}
 
-		return getLabelCoreList(lbl.getChildren());
+		List<RestResponse<LabelCore>> children = getLabelCoreList(lbl.getChildren());
+		return children;
 	}
 
 	/**
@@ -211,65 +125,16 @@ public class LabelService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if the label is not found
 	 */
-	public List<LabelCore> getParentsLabels(Long id) throws MetaObjectNotFoundException {
+	@RequestMapping ( value = "/{id}/parents", method = RequestMethod.GET)
+	public RestResponse<List<RestResponse<LabelCore>>> getParentLabels(@PathVariable ( "id" ) Long id) 
+			throws MetaObjectNotFoundException {
 
 		Label lbl = lblRepository.findById(id);
 		if (lbl == null) {
 			notFound(MetaObjectType.LABEL, id);
 		}
 
-		return getLabelCoreList(lbl.getParents());
-	}
-
-	/**
-	 * Adds one label as a child of another label.
-	 * 
-	 * @param parentId
-	 *            parent label ID
-	 * @param childId
-	 *            child label ID
-	 *            
-	 * @throws MetaObjectNotFoundException
-	 *             if parent of child label is not found
-	 */
-	public void addChild(Long parentId, Long childId) throws MetaObjectNotFoundException {
-		
-		Label parent = lblRepository.findById(parentId);
-		if (parent == null) {
-			notFound(MetaObjectType.LABEL, parentId);
-		}
-		
-		Label child = lblRepository.findById(childId);
-		if (child == null) {
-			notFound(MetaObjectType.LABEL, childId);
-		}
-		
-		parent.addChild(child);		
-	}
-	
-	/**
-	 * Removes one label as a child of another label.
-	 * 
-	 * @param parentId
-	 *            parent label ID
-	 * @param childId
-	 *            child label ID
-	 *            
-	 * @throws MetaObjectNotFoundException
-	 *             if parent of child label is not found
-	 */
-	public void removeChild(Long parentId, long childId) throws MetaObjectNotFoundException {
-		
-		Label parent = lblRepository.findById(parentId);
-		if (parent == null) {
-			notFound(MetaObjectType.LABEL, parentId);
-		}
-		
-		Label child = lblRepository.findById(childId);
-		if (child == null) {
-			notFound(MetaObjectType.LABEL, childId);
-		}
-		
-		parent.removeChild(child);				
+		List<RestResponse<LabelCore>> children = getLabelCoreList(lbl.getParents());
+		return new RestResponse<>(children).addLink("self", LabelLinkSupport.buildChildrenLink(id));
 	}
 }

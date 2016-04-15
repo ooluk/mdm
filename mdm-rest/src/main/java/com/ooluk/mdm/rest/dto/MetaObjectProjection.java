@@ -1,5 +1,7 @@
 package com.ooluk.mdm.rest.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.ooluk.mdm.core.meta.DynamicProperties;
 
 /**
@@ -12,6 +14,9 @@ import com.ooluk.mdm.core.meta.DynamicProperties;
 public abstract class MetaObjectProjection {
 
 	private Long id;
+	
+	@JsonSerialize(using = DynamicPropertiesJsonSerializer.class)
+	@JsonDeserialize(using = DynamicPropertiesJsonDeserializer.class)
 	private DynamicProperties properties;
 	
 	public Long getId() {

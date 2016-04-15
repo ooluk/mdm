@@ -13,17 +13,20 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<log4j2-version>2.1</log4j2-version>
 		<log4j1-version>2.2</log4j1-version>
 		<junit-version>4.12</junit-version>
 		<mockito-version>1.10.19</mockito-version>
-
 		<spring-version>4.2.5.RELEASE</spring-version>
+		<spring-hateoas-version>0.19.0.RELEASE</spring-hateoas-version>
 		<hibernate-core-version>5.1.0.Final</hibernate-core-version>
 		<hibernate-search-version>5.5.2.Final</hibernate-search-version>
 		<jersey-version>2.22.2</jersey-version>
 		<jackson-version>2.7.1</jackson-version>
+		<json-path-version>2.2.0</json-path-version>
 		<dozer-version>5.5.1</dozer-version>
+		<postgresql-version>9.4-1201-jdbc41</postgresql-version>
 	</properties>
 
 	<dependencies>
@@ -89,15 +92,9 @@
 		<dependencies>
 
 			<dependency>
-				<groupId>com.ooluk.mdm</groupId>
-				<artifactId>mdm-core</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>9.4-1201-jdbc41</version>
+				<version>${postgresql-version}</version>
 			</dependency>
 
 			<!-- ############################# -->
@@ -173,6 +170,12 @@
 				<version>${spring-version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.springframework.hateoas</groupId>
+				<artifactId>spring-hateoas</artifactId>
+				<version>${spring-hateoas-version}</version>
+			</dependency>
+
 			<!-- ############################# -->
 			<!-- Jackson dependencies -->
 			<!-- ############################# -->
@@ -195,19 +198,20 @@
 				<version>${jackson-version}</version>
 			</dependency>
 
+			<!-- ############################# -->
+			<!-- Other dependencies -->
+			<!-- ############################# -->
+
 			<dependency>
 				<groupId>net.sf.dozer</groupId>
 				<artifactId>dozer</artifactId>
 				<version>${dozer-version}</version>
 			</dependency>
 
-			<!-- ############################# -->
-			<!-- Jersey dependencies -->
-			<!-- ############################# -->
 			<dependency>
-			    <groupId>org.glassfish.jersey.media</groupId>
-			    <artifactId>jersey-media-json-jackson</artifactId>
-			    <version>${jersey-version}</version>
+				<groupId>com.jayway.jsonpath</groupId>
+				<artifactId>json-path</artifactId>
+				<version>${json-path-version}</version>
 			</dependency>
 
 		</dependencies>
