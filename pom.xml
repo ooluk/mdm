@@ -18,10 +18,11 @@
 		<junit-version>4.12</junit-version>
 		<mockito-version>1.10.19</mockito-version>
 
+		<spring-version>4.2.5.RELEASE</spring-version>
 		<hibernate-core-version>5.1.0.Final</hibernate-core-version>
 		<hibernate-search-version>5.5.2.Final</hibernate-search-version>
+		<jersey-version>2.22.2</jersey-version>
 		<jackson-version>2.7.1</jackson-version>
-		<spring-version>4.2.5.RELEASE</spring-version>
 		<dozer-version>5.5.1</dozer-version>
 	</properties>
 
@@ -86,6 +87,12 @@
 	<dependencyManagement>
 
 		<dependencies>
+
+			<dependency>
+				<groupId>com.ooluk.mdm</groupId>
+				<artifactId>mdm-core</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.postgresql</groupId>
@@ -194,10 +201,20 @@
 				<version>${dozer-version}</version>
 			</dependency>
 
+			<!-- ############################# -->
+			<!-- Jersey dependencies -->
+			<!-- ############################# -->
+			<dependency>
+			    <groupId>org.glassfish.jersey.media</groupId>
+			    <artifactId>jersey-media-json-jackson</artifactId>
+			    <version>${jersey-version}</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
 	<modules>
 		<module>mdm-core</module>
+		<module>mdm-rest</module>
 	</modules>
 </project>
