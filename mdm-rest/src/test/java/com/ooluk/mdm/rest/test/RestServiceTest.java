@@ -19,7 +19,7 @@ import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
 @ContextConfiguration
 public class RestServiceTest {
 	
-	protected JerseyTest test;
+	protected JerseyTest rest;
 
 	@Configuration
 	static class ContextConfiguration {
@@ -44,6 +44,6 @@ public class RestServiceTest {
 	
 	@After
 	public void tearDown() throws Exception {
-		test.tearDown();
+		rest.tearDown();
 	}
 }
