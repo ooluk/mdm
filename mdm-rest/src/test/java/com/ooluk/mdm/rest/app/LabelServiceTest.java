@@ -1,9 +1,9 @@
 package com.ooluk.mdm.rest.app;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MvcResult;
 
 import com.ooluk.mdm.core.meta.app.Label;
 import com.ooluk.mdm.core.meta.app.LabelRepository;
@@ -56,40 +55,62 @@ public class LabelServiceTest extends RestServiceTest {
 	}
 	
 	private Label getLabel() {		
-		Label lbl = TestData.getLabel("T1", "L1");
-		Label c1 = TestData.getLabel("T1", "C1");
-		TestUtils.setIdField(c1.getType(), 1L);
-		TestUtils.setIdField(c1, 11L);
-		Label c2 = TestData.getLabel("T1", "C2");
-		TestUtils.setIdField(c2.getType(), 1L);
-		TestUtils.setIdField(c2, 12L);
+		Label lbl = TestData.getLabel("T1", "L1", 1L);
+		// Add children
+		Label c1 = TestData.getLabel("T1", "C1", 11L);
+		Label c2 = TestData.getLabel("T1", "C2", 12L);
 		lbl.getChildren().add(c1);
 		lbl.getChildren().add(c2);
-		TestUtils.setIdField(lbl.getType(), 1L);
-		TestUtils.setIdField(lbl, 1L);
+		// Add parents
+		Label p1 = TestData.getLabel("T1", "P1", 21L);
+		Label p2 = TestData.getLabel("T1", "P2", 22L);
+		lbl.getParents().add(p1);
+		lbl.getParents().add(p2);
 		return lbl;
 	}
 
 	@Test
 	public void getLabelById() throws Exception {
-		Label lbl = getLabel();
-		Mockito.when(lblRepo.findById(1L)).thenReturn(lbl);
-		MvcResult r  = mvc.perform(get("/label/1").accept(MediaType.APPLICATION_JSON))
+		Mockito.when(lblRepo.findById(1L)).thenReturn(getLabel());
+		mvc.perform(get("/labels/1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.content.id").value(1))
 				.andExpect(jsonPath("$.content.name").value("L1"))
+				.andExpect(jsonPath("$.content.type.id").value(1))
+				.andExpect(jsonPath("$.content.type.name").value("T1"))
+				.andExpect(jsonPath("$.content.properties.number").value(100))
+				.andExpect(jsonPath("$.links.self").value(Matchers.endsWith("/labels/1")))
+				.andExpect(jsonPath("$.links.children").value(Matchers.endsWith("/labels/1/children")))
+				.andExpect(jsonPath("$.links.parents").value(Matchers.endsWith("/labels/1/parents")))
 				.andReturn();
-		System.out.println(r.getResponse().getContentAsString());
 	}
 
 	@Test
 	public void getChildLabels() throws Exception {
 		Label lbl = getLabel();
 		Mockito.when(lblRepo.findById(1L)).thenReturn(lbl);
-		MvcResult r  = mvc.perform(get("/label/1/children").accept(MediaType.APPLICATION_JSON))
+		mvc.perform(get("/labels/1/children").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				//.andExpect(jsonPath("$.content.name").value("L1"))
+				.andExpect(jsonPath("$.length()").value(2))
+				.andExpect(jsonPath("$[0].content.id").value(Matchers.in(new Integer[]{11, 12})))
+				.andExpect(jsonPath("$[1].content.id").value(Matchers.in(new Integer[]{11, 12})))
+				.andExpect(jsonPath("$[0].links.self").value(Matchers.matchesPattern(".*/labels/1[12]")))
+				.andExpect(jsonPath("$[1].links.self").value(Matchers.matchesPattern(".*/labels/1[12]")))
 				.andReturn();
-		System.out.println(r.getResponse().getContentAsString());
+	}
+
+	@Test
+	public void getParentsLabels() throws Exception {
+		Label lbl = getLabel();
+		Mockito.when(lblRepo.findById(1L)).thenReturn(lbl);
+		mvc.perform(get("/labels/1/parents").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.length()").value(2))
+				.andExpect(jsonPath("$[0].content.id").value(Matchers.in(new Integer[]{21, 22})))
+				.andExpect(jsonPath("$[1].content.id").value(Matchers.in(new Integer[]{21, 22})))
+				.andExpect(jsonPath("$[0].links.self").value(Matchers.matchesPattern(".*/labels/2[12]")))
+				.andExpect(jsonPath("$[1].links.self").value(Matchers.matchesPattern(".*/labels/2[12]")))
+				.andReturn();
 	}
 }
 

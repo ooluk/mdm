@@ -110,8 +110,9 @@ public class TestData {
 	 * 
 	 * @return label type
 	 */
-	public static LabelType getLabelType(String name) {		
+	public static LabelType getLabelType(String name, Long id) {		
 		LabelType type = (new LabelType(name)).setProperties(getDynamicProperties());
+		TestUtils.setIdField(type, id);
 		return type;
 	}
 	
@@ -125,8 +126,9 @@ public class TestData {
 	 * 
 	 * @return label
 	 */
-	public static Label getLabel(String type, String name) {		
-		Label label = (new Label(getLabelType(type), name)).setProperties(getDynamicProperties());
+	public static Label getLabel(String type, String name, Long id) {		
+		Label label = (new Label(getLabelType(type, 1L), name)).setProperties(getDynamicProperties());
+		TestUtils.setIdField(label, id);
 		return label;
 	}
 	

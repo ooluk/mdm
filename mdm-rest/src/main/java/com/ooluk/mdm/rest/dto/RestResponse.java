@@ -4,9 +4,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * A generic class that wraps the DTOs to provide HATEOAS support. This was designed because
  * Spring's HATEOAS support relies on HAL which is more verbose and more difficult to parse.
@@ -15,13 +12,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0
  *
  */
-public class RestResponse<T> {
+public class RestResponse<T extends MetaObjectDto> {
 	
 	private final T content;	
 	private final Map<String, URI> links;
 	
-	@JsonCreator
-    public RestResponse(@JsonProperty("content") T content) {
+	/**
+	 * Constructs a RestResponse class wrapping the specified object.
+	 * 
+	 * @param content
+	 *            the object to wrap
+	 */
+    public RestResponse(T content) {
         this.content = content;
         links = new HashMap<>();
     }

@@ -10,12 +10,18 @@ import com.jayway.jsonpath.JsonPath;
 import com.ooluk.mdm.core.meta.DynamicProperties;
 import com.ooluk.mdm.rest.test.TestData;
 
+/**
+ * 
+ * @author Siddhesh Prabhu
+ * @since  1.0
+ *
+ */
 public class DynamicPropertiesJacksonTest {
 
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	// Create an implementation of abstract class MetaObjectProjection 
-	private static class MetaObjectProjectionImpl extends MetaObjectProjection {
+	private static class MetaObjectProjectionImpl extends MetaObjectDto {
 		
 		@Override
 		public Long getId() {
@@ -28,24 +34,24 @@ public class DynamicPropertiesJacksonTest {
 		}
 	}
 	
-	private DynamicProperties dp = TestData.getDynamicProperties();	
+	private DynamicProperties expected = TestData.getDynamicProperties();	
 	
 	@Test
 	public void testSerialization() throws JsonProcessingException {
 				
-		MetaObjectProjection meta = new MetaObjectProjectionImpl();
+		MetaObjectDto meta = new MetaObjectProjectionImpl();
 		String json = mapper.writeValueAsString(meta);
 		// DEBUG: System.out.println(json);
 		
-		// Test \"number\" property
+		// Test "number" property
 		JsonPath jpath = JsonPath.compile("$.properties.number");
 		Integer number = jpath.read(json);
-		assertEquals(dp.getProperty("number"), number.intValue());
+		assertEquals(expected.getProperty("number"), number.intValue());
 		
-		// Test \"text-value\" property
+		// Test "text-value" property
 		jpath = JsonPath.compile("$.properties.text");
 		String value = jpath.read(json);
-		assertEquals(dp.getProperty("text"), value);
+		assertEquals(expected.getProperty("text"), value);
 	}
 	
 	@Test
@@ -53,6 +59,6 @@ public class DynamicPropertiesJacksonTest {
 		String json = "{\"id\":1,\"properties\":"
 				+ "{\"number\":100,\"text\":\"text-value\",\"number-list\":[1,2],\"text-list\":[\"t1\",\"t2\"]}}";		
 		MetaObjectProjectionImpl meta = mapper.readValue(json, MetaObjectProjectionImpl.class);
-		assertEquals(dp, meta.getProperties());
+		assertEquals(expected, meta.getProperties());
 	}
 }

@@ -6,7 +6,7 @@ package com.ooluk.mdm.rest.dto;
  * @since  1.0
  *
  */
-public class LabelTypeCore extends MetaObjectProjection {
+public class LabelTypeCore extends MetaObjectDto {
 
 	private String name;
 	

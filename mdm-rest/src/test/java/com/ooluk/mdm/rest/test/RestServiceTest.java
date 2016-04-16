@@ -41,15 +41,8 @@ public class RestServiceTest {
 			return mapper;
 		}
 		
-		@Bean
-		public LabelTypeRepository getLabelTypeRepository() {
-			return null;
-		}
-		
-		@Bean
-		public LabelRepository getLabelRepository() {
-			return null;
-		}
+		@Bean public LabelTypeRepository getLabelTypeRepository() { return null; }		
+		@Bean public LabelRepository getLabelRepository() { return null; }
 	}
 	
 	@Before

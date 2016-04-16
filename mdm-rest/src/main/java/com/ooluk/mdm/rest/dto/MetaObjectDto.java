@@ -11,7 +11,7 @@ import com.ooluk.mdm.core.meta.DynamicProperties;
  * @since 1.0
  *
  */
-public abstract class MetaObjectProjection {
+public abstract class MetaObjectDto {
 
 	private Long id;
 	
