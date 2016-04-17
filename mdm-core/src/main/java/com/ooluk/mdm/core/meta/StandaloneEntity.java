@@ -54,6 +54,17 @@ public abstract class StandaloneEntity<T extends StandaloneEntity<T>> implements
 	}
 
 	/**
+	 * Sets the ID. This method should generally not be called. This was added primarily to support
+	 * ease of testing with dozer.
+	 * 
+	 * @param id
+	 *            entity ID
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
 	 * Returns the dynamic properties
 	 * 
 	 * @return dynamic properties

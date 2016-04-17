@@ -21,7 +21,7 @@ public class DynamicPropertiesJacksonTest {
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	// Create an implementation of abstract class MetaObjectProjection 
-	private static class MetaObjectProjectionImpl extends MetaObjectDto {
+	private static class MetaObjectProjectionImpl extends MetaObjectData {
 		
 		@Override
 		public Long getId() {
@@ -39,7 +39,7 @@ public class DynamicPropertiesJacksonTest {
 	@Test
 	public void testSerialization() throws JsonProcessingException {
 				
-		MetaObjectDto meta = new MetaObjectProjectionImpl();
+		MetaObjectData meta = new MetaObjectProjectionImpl();
 		String json = mapper.writeValueAsString(meta);
 		// DEBUG: System.out.println(json);
 		

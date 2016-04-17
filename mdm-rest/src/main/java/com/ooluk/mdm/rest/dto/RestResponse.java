@@ -12,7 +12,7 @@ import java.util.Map;
  * @since 1.0
  *
  */
-public class RestResponse<T extends MetaObjectDto> {
+public class RestResponse<T> {
 	
 	private final T content;	
 	private final Map<String, URI> links;

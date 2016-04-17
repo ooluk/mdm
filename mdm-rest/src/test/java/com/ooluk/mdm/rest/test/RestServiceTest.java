@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -16,7 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ooluk.mdm.core.meta.app.LabelRepository;
 import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
 
@@ -24,14 +27,20 @@ import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
 @ContextConfiguration
 @WebAppConfiguration
 public class RestServiceTest {
-
+	
     @Autowired
     protected WebApplicationContext wac;
+	
+	@Autowired
+	private RequestMappingHandlerMapping requestMapping;
     
     protected MockMvc mvc;
+    
+    protected ObjectMapper jsonMapper = new ObjectMapper();
 
 	@Configuration
 	@EnableWebMvc
+	@ComponentScan ( basePackages = {"com.ooluk.mdm.rest.commons", "com.ooluk.mdm.rest.validation"} )
 	static class ContextConfiguration {
 
 		@Bean
@@ -48,5 +57,7 @@ public class RestServiceTest {
 	@Before
 	public void baseSetUp() throws Exception {
         mvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        // Required to enable @MatrixVariables 
+        requestMapping.setRemoveSemicolonContent(false);
 	}
 }
