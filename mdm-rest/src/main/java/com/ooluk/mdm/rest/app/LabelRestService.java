@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ooluk.mdm.core.meta.MetaObjectType;
@@ -21,6 +22,7 @@ import com.ooluk.mdm.core.meta.app.Label;
 import com.ooluk.mdm.core.meta.app.LabelRepository;
 import com.ooluk.mdm.core.meta.app.LabelType;
 import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
+import com.ooluk.mdm.rest.commons.BadRequestException;
 import com.ooluk.mdm.rest.commons.MetaObjectNotFoundException;
 import com.ooluk.mdm.rest.commons.RestService;
 import com.ooluk.mdm.rest.dto.LabelData;
@@ -36,7 +38,7 @@ import com.ooluk.mdm.rest.validation.ValidationFailedException;
  */
 @RestController
 @RequestMapping ( value = "/labels" )
-public class LabelService extends RestService {
+public class LabelRestService extends RestService {
 
 	@Autowired
 	private LabelRepository lblRepository;
@@ -45,7 +47,7 @@ public class LabelService extends RestService {
 	private LabelTypeRepository typeRepository;
 
 	/**
-	 * Gets the label with the specified ID.
+	 * Gets a label by ID.
 	 * 
 	 * @param id
 	 *            label ID
@@ -128,7 +130,7 @@ public class LabelService extends RestService {
 	}
 
 	/**
-	 * Gets all labels of a specified type.
+	 * Gets all labels satisfying the query parameters.
 	 * 
 	 * @param typeId
 	 *            label type ID
@@ -137,10 +139,17 @@ public class LabelService extends RestService {
 	 * 
 	 * @throws MetaObjectNotFoundException
 	 *             if the label type is not found
+	 *             
+	 * @throws BadRequestException
+	 * 			   if query parameters are missing 
 	 */
-	@RequestMapping ( value = "/type/{type}", method = GET, produces = APPLICATION_JSON_VALUE )
-	public List<RestResponse<LabelData>> getLabelsByType(@PathVariable ("type") Long typeId) 
-			throws MetaObjectNotFoundException {
+	@RequestMapping ( method = GET, produces = APPLICATION_JSON_VALUE )
+	public List<RestResponse<LabelData>> getLabels(@RequestParam ("type") Long typeId) 
+			throws MetaObjectNotFoundException, BadRequestException {
+		
+		if (typeId == null) {
+			throw new BadRequestException("[type] parameter is mandatory.");
+		}
 		
 		// Ensure label type is valid
 		LabelType type = typeRepository.findById(typeId);
@@ -157,7 +166,7 @@ public class LabelService extends RestService {
 	 * 
 	 * @param typeId
 	 *            ID of the label type
-	 * @param lblData
+	 * @param data
 	 *            label data
 	 * 
 	 * @return the created label
@@ -170,23 +179,23 @@ public class LabelService extends RestService {
 	 */
 	@RequestMapping ( value = "/type/{type}", method = POST, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelData>> createLabel(
-			@PathVariable ("type") Long typeId, @RequestBody LabelData lblData) 
+			@PathVariable ("type") Long typeId, @RequestBody LabelData data) 
 			throws ValidationFailedException, MetaObjectNotFoundException {
 		
 		LabelType type = typeRepository.findById(typeId);
 		if (type == null) {
 			notFound(MetaObjectType.LABEL_TYPE, typeId);
 		}
-		validator.<LabelData>validate(lblData);
+		validator.<LabelData>validate(data);
 		
-		Label label = mapper.map(lblData, Label.class);
+		Label label = mapper.map(data, Label.class);
 		label.setType(type);
 		lblRepository.create(label);
 		
-		RestResponse<LabelData> body = this.getLabelById(label.getId());
+		RestResponse<LabelData> entity = this.getLabelById(label.getId());
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("location", LabelLinkSupport.buildSelfLink(label.getId()).toString());
-		return new ResponseEntity<>(body, headers, HttpStatus.CREATED);
+		return new ResponseEntity<>(entity, headers, HttpStatus.CREATED);
 	}
 	
 	/**
@@ -194,7 +203,7 @@ public class LabelService extends RestService {
 	 * 
 	 * @param id
 	 *            ID of the label 
-	 * @param lblData
+	 * @param body
 	 *            label data
 	 * 
 	 * @throws ValidationFailedException
@@ -203,44 +212,120 @@ public class LabelService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if label is not found
 	 */
-	@RequestMapping ( value = "{id}", method = PUT, consumes = APPLICATION_JSON_VALUE )
+	@RequestMapping ( value = "/{id}", method = PUT, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelData>> updateLabel(
-			@PathVariable ("id") Long id, @RequestBody LabelData lblData) 
+			@PathVariable ("id") Long id, @RequestBody LabelData body) 
 			throws ValidationFailedException, MetaObjectNotFoundException {
 		
 		Label label = lblRepository.findById(id);
 		if (label == null) {
 			notFound(MetaObjectType.LABEL, id);
 		}
-		validator.<LabelData>validate(lblData);
+		validator.<LabelData>validate(body);
 		
-		label.setName(lblData.getName());
-		label.setProperties(lblData.getProperties());
+		label.setName(body.getName());
+		label.setProperties(body.getProperties());
 		lblRepository.update(label);
 		
-		RestResponse<LabelData> body = this.getLabelById(label.getId());
-		return ResponseEntity.ok(body);
+		RestResponse<LabelData> entity = this.getLabelById(label.getId());
+		return ResponseEntity.ok(entity);
 	}
 	
 	/**
-	 * Converts a list of Labels to a list of LabelCore(s).
+	 * Deletes a label.
 	 * 
-	 * @param labelList
-	 *            list of Label(s)
-	 *            
-	 * @return list of LabelCore(s)
+	 * @param id
+	 *            ID of the label 
+	 *             
+	 * @throws MetaObjectNotFoundException
+	 *             if label is not found
+	 */
+	@RequestMapping ( value = "/{id}", method = DELETE )
+	public ResponseEntity<Void> deleteLabel(@PathVariable ("id") Long id) 
+			throws MetaObjectNotFoundException {
+		
+		Label label = lblRepository.findById(id);
+		if (label == null) {
+			notFound(MetaObjectType.LABEL, id);
+		}				
+		lblRepository.delete(label);
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+	}
+	
+	/**
+	 * Sets one label as a child of another.
 	 * 
-	 * @throws MetaObjectNotFoundException 
+	 * @param id
+	 *            ID of the parent label 
+	 * @param childId
+	 *            ID of label to be added as a child
+	 *             
+	 * @throws MetaObjectNotFoundException
+	 *             if parent or child label is not found
+	 */
+	@RequestMapping ( value = "/{pid}/child/{cid}", method = PUT )
+	public ResponseEntity<Void> addChildLabel(@PathVariable ("pid") Long pid, 
+			@PathVariable ("cid") Long cid) throws MetaObjectNotFoundException {
+		
+		Label label = lblRepository.findById(pid);
+		if (label == null) {
+			notFound(MetaObjectType.LABEL, pid);
+		}
+		
+		Label child = lblRepository.findById(cid);
+		if (child == null) {
+			notFound(MetaObjectType.LABEL, cid);
+		}
+		
+		label.addChild(child);
+		lblRepository.update(label);
+		
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+	}
+	
+	/**
+	 * Removes the parent-child relationship between 2 labels.
+	 * 
+	 * @param id
+	 *            ID of the parent label 
+	 * @param childId
+	 *            ID of label to be removed as a child
+	 *             
+	 * @throws MetaObjectNotFoundException
+	 *             if parent or child label is not found
+	 */
+	@RequestMapping ( value = "/{pid}/child/{cid}", method = DELETE )
+	public ResponseEntity<Void> removeChildLabel(@PathVariable ("pid") Long pid, 
+			@PathVariable ("cid") Long cid) throws MetaObjectNotFoundException {
+		
+		Label label = lblRepository.findById(pid);
+		if (label == null) {
+			notFound(MetaObjectType.LABEL, pid);
+		}
+		
+		Label child = lblRepository.findById(cid);
+		if (child == null) {
+			notFound(MetaObjectType.LABEL, cid);
+		}
+		
+		label.removeChild(child);
+		lblRepository.update(label);
+		
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+	}
+	
+	/**
+	 * Converts a list of Labels to a list of LabelData.
 	 */
 	private List<RestResponse<LabelData>> getLabelCoreList(Collection<Label> labelList) {
 
-		List<RestResponse<LabelData>> coreList = new ArrayList<>(labelList.size());
+		List<RestResponse<LabelData>> list = new ArrayList<>(labelList.size());
 		for (Label label : labelList) {
-			LabelData coreItem = mapper.map(label, LabelData.class);
-			RestResponse<LabelData> iLabel = (new RestResponse<>(coreItem))
-					.addLink("self", LabelLinkSupport.buildSelfLink(coreItem.getId()));
-			coreList.add(iLabel);
+			LabelData data = mapper.map(label, LabelData.class);
+			RestResponse<LabelData> item = (new RestResponse<>(data))
+					.addLink("self", LabelLinkSupport.buildSelfLink(data.getId()));
+			list.add(item);
 		}
-		return coreList;
+		return list;
 	}
 }

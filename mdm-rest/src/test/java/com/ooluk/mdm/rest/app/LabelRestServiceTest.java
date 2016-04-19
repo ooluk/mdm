@@ -1,5 +1,6 @@
 package com.ooluk.mdm.rest.app;
 
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -31,24 +32,24 @@ import com.ooluk.mdm.rest.test.TestData;
 import com.ooluk.mdm.rest.test.TestUtils;
 
 @ContextConfiguration
-public class LabelServiceTest extends RestServiceTest {
+public class LabelRestServiceTest extends RestServiceTest {
 	
 	@Configuration
 	static class ContextConfiguration {		
 		@Bean
-		public LabelService getLabelService() {
-			return new LabelService();
+		public LabelRestService getLabelService() {
+			return new LabelRestService();
 		}
 	}
 	
 	@Mock
 	private LabelRepository lblRepo;	
 	@Mock
-	private LabelTypeRepository lblTypeRepo;
+	private LabelTypeRepository typeRepo;
 	
 	@InjectMocks
 	@Autowired
-	private LabelService service;
+	private LabelRestService service;
 	
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -72,6 +73,14 @@ public class LabelServiceTest extends RestServiceTest {
 		lbl.getParents().add(p1);
 		lbl.getParents().add(p2);
 		return lbl;
+	}
+
+	private LabelData getLabelData() {
+		LabelData label = new LabelData();
+		label.setId(1L);
+		label.setName("L1");
+		label.setProperties(TestData.getDynamicProperties());
+		return label;
 	}
 
 	@Test
@@ -162,13 +171,13 @@ public class LabelServiceTest extends RestServiceTest {
 	}
 
 	@Test
-	public void getLabelsByType() throws Exception {
+	public void getLabels_Query_Type() throws Exception {
 		Label lbl = getLabel();
 		LabelType type = lbl.getType();
 		Long typeId = type.getId();
-		Mockito.when(lblTypeRepo.findById(typeId)).thenReturn(type);
+		Mockito.when(typeRepo.findById(typeId)).thenReturn(type);
 		Mockito.when(lblRepo.findByType(type)).thenReturn(new ArrayList<>(lbl.getParents()));
-		mvc.perform(get("/labels/type/" + typeId).accept(MediaType.APPLICATION_JSON))
+		mvc.perform(get("/labels?type=" + typeId).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.length()").value(2))
 				.andExpect(jsonPath("$[0].content.id").value(Matchers.in(new Integer[]{21, 22})))
@@ -178,31 +187,37 @@ public class LabelServiceTest extends RestServiceTest {
 	}
 
 	@Test
-	public void getLabelsByType_No_Labels() throws Exception {
-		Mockito.when(lblRepo.findRootLabels()).thenReturn(Collections.<Label>emptyList());
-		mvc.perform(get("/labels/roots").accept(MediaType.APPLICATION_JSON))
+	public void getLabels_Query_Type_No_Labels() throws Exception {
+		LabelType type = new LabelType().setId(1L);
+		Mockito.when(typeRepo.findById(type.getId())).thenReturn(type);
+		Mockito.when(lblRepo.findByType(type)).thenReturn(Collections.<Label>emptyList());
+		mvc.perform(get("/labels?type=1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.length()").value(0));
 	}
 
 	@Test
-	public void getLabelsByType_Type_Not_Found() throws Exception {
-		Label lbl = getLabel();
-		LabelType type = lbl.getType();
-		Long typeId = type.getId();
-		Mockito.when(lblTypeRepo.findById(typeId)).thenReturn(type);
+	public void getLabels_Query_Type_Not_Found() throws Exception {
+		LabelType type = new LabelType().setId(1L);
+		Mockito.when(typeRepo.findById(1L)).thenReturn(type);
 		Mockito.when(lblRepo.findByType(type)).thenReturn(Collections.<Label>emptyList());
-		mvc.perform(get("/labels/type/" + typeId).accept(MediaType.APPLICATION_JSON))
+		mvc.perform(get("/labels?type=1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.length()").value(0));
 	}
 
-	private LabelData getLabelData() {
-		LabelData label = new LabelData();
-		label.setId(1L);
-		label.setName("L1");
-		label.setProperties(TestData.getDynamicProperties());
-		return label;
+	@Test
+	public void getLabels_No_Query() throws Exception {
+		mvc.perform(get("/labels").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().string(Matchers.blankString()));
+	}
+
+	@Test
+	public void getLabels_No_Query_Value() throws Exception {
+		mvc.perform(get("/labels?type=").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(content().string(Matchers.containsString("type")));
 	}
 
 	@Test
@@ -210,7 +225,7 @@ public class LabelServiceTest extends RestServiceTest {
 		
 		Label label = TestData.getLabel("T1", "L1", 1L);
 		LabelType type = label.getType();
-		Mockito.when(lblTypeRepo.findById(type.getId())).thenReturn(type);
+		Mockito.when(typeRepo.findById(type.getId())).thenReturn(type);
 		Mockito.when(lblRepo.findById(1L)).thenReturn(label);
 		
 		String content = jsonMapper.writeValueAsString(getLabelData());
@@ -223,10 +238,8 @@ public class LabelServiceTest extends RestServiceTest {
 	}
 
 	@Test
-	public void createLabel_Type_Not_Found() throws Exception {
-		
-		Mockito.when(lblTypeRepo.findById(Mockito.anyLong())).thenReturn(null);
-		
+	public void createLabel_Type_Not_Found() throws Exception {		
+		Mockito.when(typeRepo.findById(Mockito.anyLong())).thenReturn(null);		
 		String content = jsonMapper.writeValueAsString(getLabelData());
 		mvc.perform(post("/labels/type/1")
 				.contentType(MediaType.APPLICATION_JSON).content(content)
@@ -235,12 +248,9 @@ public class LabelServiceTest extends RestServiceTest {
 	}
 
 	@Test
-	public void createLabel_Invalid_Data() throws Exception {
-		
-		Mockito.when(lblTypeRepo.findById(1L)).thenReturn(new LabelType());
-		
-		LabelData data = getLabelData(); data.setName("");
-		
+	public void createLabel_Invalid_Data() throws Exception {		
+		Mockito.when(typeRepo.findById(1L)).thenReturn(new LabelType());		
+		LabelData data = getLabelData(); data.setName("");		
 		String content = jsonMapper.writeValueAsString(data);
 		mvc.perform(post("/labels/type/1")
 				.contentType(MediaType.APPLICATION_JSON).content(content)
@@ -251,24 +261,105 @@ public class LabelServiceTest extends RestServiceTest {
 	}
 
 	@Test
-	public void updateLabel() throws Exception {
-		
-		Label label =new Label();
-		label.setId(1L);
-		Mockito.when(lblRepo.findById(1L)).thenReturn(label);
-		
+	public void updateLabel() throws Exception {		
+		Mockito.when(lblRepo.findById(1L)).thenReturn(new Label().setId(1L));		
 		String content = jsonMapper.writeValueAsString(getLabelData());
 		mvc.perform(put("/labels/1")
 				.contentType(MediaType.APPLICATION_JSON).content(content)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.content.id").value(1))
-				.andExpect(jsonPath("$.content.name").value("L1"))
-				.andExpect(jsonPath("$.content.properties.number").value(100))
-				.andExpect(jsonPath("$.links.self").value(Matchers.endsWith("/labels/1")))
-				.andExpect(jsonPath("$.links.children").value(Matchers.endsWith("/labels/1/children")))
-				.andExpect(jsonPath("$.links.parents").value(Matchers.endsWith("/labels/1/parents")));
+				.andExpect(jsonPath("$.content.id").value(1));
+	}
+
+	@Test
+	public void updateLabel_Not_Found() throws Exception {		
+		Mockito.when(lblRepo.findById(1L)).thenReturn(null);		
+		String content = jsonMapper.writeValueAsString(getLabelData());
+		mvc.perform(put("/labels/1")
+				.contentType(MediaType.APPLICATION_JSON).content(content)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void updateLabel_Invalid_Data() throws Exception {			
+		Mockito.when(lblRepo.findById(1L)).thenReturn(new Label().setId(1L));		
+		LabelData data = getLabelData(); data.setName("");		
+		String content = jsonMapper.writeValueAsString(data);
+		mvc.perform(put("/labels/1")
+				.contentType(MediaType.APPLICATION_JSON).content(content)
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.length()").value(1))
+				.andExpect(jsonPath("$[0]").value("Name is missing"));
+	}
+
+	@Test
+	public void deleteLabel() throws Exception {	
+		Mockito.when(lblRepo.findById(1L)).thenReturn(new Label().setId(1L));		
+		mvc.perform(delete("/labels/1"))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
+	public void deleteLabel_Not_Found() throws Exception {		
+		Mockito.when(lblRepo.findById(1L)).thenReturn(null);		
+		mvc.perform(delete("/labels/1"))
+				.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void addChild() throws Exception {	
+		Label p = new Label();
+		Label c = new Label();
+		assertFalse(p.getChildren().contains(c));
+		Mockito.when(lblRepo.findById(1L)).thenReturn(p);
+		Mockito.when(lblRepo.findById(2L)).thenReturn(c);
+		mvc.perform(put("/labels/1/child/2"))
+			.andExpect(status().isNoContent()).andReturn();
+		assertTrue(p.getChildren().contains(c));
+	}
+	
+	@Test
+	public void addChild_Parent_Not_Found() throws Exception {
+		Mockito.when(lblRepo.findById(1L)).thenReturn(null);
+		mvc.perform(put("/labels/1/child/2"))
+			.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void addChild_Child_Not_Found() throws Exception {
+		Mockito.when(lblRepo.findById(1L)).thenReturn(new Label());
+		Mockito.when(lblRepo.findById(2L)).thenReturn(null);
+		mvc.perform(put("/labels/1/child/2"))
+			.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void removeChild() throws Exception {	
+		Label p = new Label();
+		Label c = new Label();
+		p.getChildren().add(c);
+		assertTrue(p.getChildren().contains(c));
+		Mockito.when(lblRepo.findById(1L)).thenReturn(p);
+		Mockito.when(lblRepo.findById(2L)).thenReturn(c);
+		mvc.perform(delete("/labels/1/child/2"))
+			.andExpect(status().isNoContent()).andReturn();
+		assertFalse(p.getChildren().contains(c));
+	}
+	
+	@Test
+	public void removeChild_Parent_Not_Found() throws Exception {
+		Mockito.when(lblRepo.findById(1L)).thenReturn(null);
+		mvc.perform(delete("/labels/1/child/2"))
+			.andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void removeChild_Child_Not_Found() throws Exception {
+		Mockito.when(lblRepo.findById(1L)).thenReturn(new Label());
+		Mockito.when(lblRepo.findById(2L)).thenReturn(null);
+		mvc.perform(delete("/labels/1/child/2"))
+			.andExpect(status().isNotFound());
 	}
 }
-
-

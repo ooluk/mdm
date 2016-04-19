@@ -36,4 +36,10 @@ public class ExceptionHandlers {
     public ResponseEntity<List<String>> customHandler(ValidationFailedException ex) {
 	    return new ResponseEntity<>(ex.getValidationResponse().getFailureReasons(), HttpStatus.BAD_REQUEST);
 	}
+	
+	// MissingQueryParametersException ==> 400
+	@ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<String> customHandler(BadRequestException ex) {
+	    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+	}
 }

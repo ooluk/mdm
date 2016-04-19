@@ -28,14 +28,11 @@ public class LabelData extends MetaObjectData implements Validatable<LabelData> 
 	}
 	
 	@Override
-	public ValidationResponse validate(LabelData data) {
-		
-		ValidationResponse vResult  = new ValidationResponse();
-		
+	public ValidationResponse validate(LabelData data) {		
+		ValidationResponse vResult  = new ValidationResponse();		
 		if (name == null || name.trim().isEmpty()) {
 			vResult.addReason("Name is missing");
-		}
-		
+		}		
 		return vResult;
 	}
 

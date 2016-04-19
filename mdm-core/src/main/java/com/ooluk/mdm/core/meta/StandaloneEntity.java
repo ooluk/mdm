@@ -59,9 +59,13 @@ public abstract class StandaloneEntity<T extends StandaloneEntity<T>> implements
 	 * 
 	 * @param id
 	 *            entity ID
+	 *            
+	 * @return a reference to this object to enabl fluent API
 	 */
-	public void setId(Long id) {
+	@SuppressWarnings ( "unchecked" )
+	public T setId(Long id) {
 		this.id = id;
+		return (T) this;
 	}
 
 	/**
