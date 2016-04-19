@@ -20,9 +20,9 @@ public class MetaObjectNotFoundException extends Exception {
 	 * Constructs a MetaObjectNotFoundException for a specific metaobject type and ID.
 	 * 
 	 * @param type
-	 *            metaobject type
+	 *            meta object type
 	 * @param id
-	 *            metaobject ID
+	 *            meta object ID
 	 */
 	public MetaObjectNotFoundException(MetaObjectType type, Long id) {
 		this.type = type;
@@ -49,6 +49,6 @@ public class MetaObjectNotFoundException extends Exception {
 
 	@Override
 	public String getMessage() {
-		return type + " with id=" + id + " not found";
+		return type + " with ID=" + id + " not found";
 	}
 }

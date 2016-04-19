@@ -22,7 +22,7 @@ public class DuplicateKeyException extends Exception {
 	/**
 	 * Constructs a MetaObjectNotFoundException for a specific metaobject type and string key. This
 	 * method is handy for meta objects that have a single String key or are represented by a unique
-	 * string key within a containing meta object.
+	 * string key within a containing meta object (e.g. Attribute).
 	 * 
 	 * @param type
 	 *            metaobject type
@@ -36,7 +36,7 @@ public class DuplicateKeyException extends Exception {
 	
 	/**
 	 * Constructs a MetaObjectNotFoundException for a specific metaobject type and composite key.
-	 * This method is handy for meta object that have composite keys.
+	 * This method is handy for meta objects that have composite keys.
 	 * 
 	 * @param type
 	 *            metaobject type
@@ -51,7 +51,7 @@ public class DuplicateKeyException extends Exception {
 	/**
 	 * Returns the meta object type.
 	 * 
-	 * @return returns the meta object type
+	 * @return the meta object type
 	 */
 	public MetaObjectType getType() {
 		return type;
@@ -69,7 +69,7 @@ public class DuplicateKeyException extends Exception {
 	/**
 	 * Returns the meta object key.
 	 * 
-	 * @return a map of key-value pairs
+	 * @return the meta object key
 	 */
 	public String getKey() {
 		return key;

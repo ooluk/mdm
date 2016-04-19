@@ -26,7 +26,7 @@ import com.ooluk.mdm.core.meta.app.Label;
 import com.ooluk.mdm.core.meta.app.LabelRepository;
 import com.ooluk.mdm.core.meta.app.LabelType;
 import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
-import com.ooluk.mdm.rest.dto.LabelData;
+import com.ooluk.mdm.rest.app.dto.LabelData;
 import com.ooluk.mdm.rest.test.RestServiceTest;
 import com.ooluk.mdm.rest.test.TestData;
 import com.ooluk.mdm.rest.test.TestUtils;

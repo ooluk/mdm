@@ -40,7 +40,10 @@ public class RestServiceTest {
 
 	@Configuration
 	@EnableWebMvc
-	@ComponentScan ( basePackages = {"com.ooluk.mdm.rest.commons", "com.ooluk.mdm.rest.validation"} )
+	@ComponentScan ( basePackages = {
+			"com.ooluk.mdm.rest.commons",
+			"com.ooluk.mdm.rest.validation",
+			"com.ooluk.mdm.rest.app.validation"})
 	static class ContextConfiguration {
 
 		@Bean

@@ -57,6 +57,15 @@ public enum MetaObjectType {
 	private MetaObjectType(boolean isUniversal) {
 		this.isUniversal = isUniversal;
 	}
+
+	/**
+	 * Determines whether a meta object type is universal.
+	 * 
+	 * @return true if universal, false otherwise.
+	 */
+	public boolean isUniversal() {
+		return isUniversal;
+	}
 	
 	/**
 	 * Returns meta object types that are independent of the context.

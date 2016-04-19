@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ooluk.mdm.core.meta.MetaObjectType;
-import com.ooluk.mdm.rest.validation.Validator;
+import com.ooluk.mdm.rest.validation.DataValidator;
 
 /**
  * Superclass for all REST services.
@@ -21,17 +21,7 @@ public abstract class RestService {
 	protected Mapper mapper;
 	
 	@Autowired
-	protected Validator validator;
-	
-	/**
-	 * Sets the validator used for validation.
-	 * 
-	 * @param validator
-	 *            validator
-	 */
-	public void setValidator(Validator validator) {
-		this.validator = validator;
-	}
+	protected DataValidator validator;
 
 
 	/**

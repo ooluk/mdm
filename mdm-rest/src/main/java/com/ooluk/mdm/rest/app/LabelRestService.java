@@ -22,10 +22,10 @@ import com.ooluk.mdm.core.meta.app.Label;
 import com.ooluk.mdm.core.meta.app.LabelRepository;
 import com.ooluk.mdm.core.meta.app.LabelType;
 import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
+import com.ooluk.mdm.rest.app.dto.LabelData;
 import com.ooluk.mdm.rest.commons.BadRequestException;
 import com.ooluk.mdm.rest.commons.MetaObjectNotFoundException;
 import com.ooluk.mdm.rest.commons.RestService;
-import com.ooluk.mdm.rest.dto.LabelData;
 import com.ooluk.mdm.rest.dto.RestResponse;
 import com.ooluk.mdm.rest.validation.ValidationFailedException;
 
@@ -42,9 +42,8 @@ public class LabelRestService extends RestService {
 
 	@Autowired
 	private LabelRepository lblRepository;
-
 	@Autowired
-	private LabelTypeRepository typeRepository;
+	private LabelTypeRepository typeRepository;	
 
 	/**
 	 * Gets a label by ID.
@@ -68,9 +67,9 @@ public class LabelRestService extends RestService {
 		LabelData lbl = mapper.map(label, LabelData.class);
 		
 		return new RestResponse<>(lbl)
-				.addLink("self", LabelLinkSupport.buildSelfLink(id))
-				.addLink("children", LabelLinkSupport.buildChildrenLink(id))
-				.addLink("parents", LabelLinkSupport.buildParentsLink(id));
+				.addLink("self", LabelHateoas.buildSelfLink(id))
+				.addLink("children", LabelHateoas.buildChildrenLink(id))
+				.addLink("parents", LabelHateoas.buildParentsLink(id));
 	}
 
 	/**
@@ -186,7 +185,7 @@ public class LabelRestService extends RestService {
 		if (type == null) {
 			notFound(MetaObjectType.LABEL_TYPE, typeId);
 		}
-		validator.<LabelData>validate(data);
+		validator.validate(data);
 		
 		Label label = mapper.map(data, Label.class);
 		label.setType(type);
@@ -194,7 +193,7 @@ public class LabelRestService extends RestService {
 		
 		RestResponse<LabelData> entity = this.getLabelById(label.getId());
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("location", LabelLinkSupport.buildSelfLink(label.getId()).toString());
+		headers.add("location", LabelHateoas.buildSelfLink(label.getId()).toString());
 		return new ResponseEntity<>(entity, headers, HttpStatus.CREATED);
 	}
 	
@@ -203,7 +202,7 @@ public class LabelRestService extends RestService {
 	 * 
 	 * @param id
 	 *            ID of the label 
-	 * @param body
+	 * @param data
 	 *            label data
 	 * 
 	 * @throws ValidationFailedException
@@ -214,17 +213,17 @@ public class LabelRestService extends RestService {
 	 */
 	@RequestMapping ( value = "/{id}", method = PUT, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelData>> updateLabel(
-			@PathVariable ("id") Long id, @RequestBody LabelData body) 
+			@PathVariable ("id") Long id, @RequestBody LabelData data) 
 			throws ValidationFailedException, MetaObjectNotFoundException {
 		
 		Label label = lblRepository.findById(id);
 		if (label == null) {
 			notFound(MetaObjectType.LABEL, id);
 		}
-		validator.<LabelData>validate(body);
+		validator.validate(data);
 		
-		label.setName(body.getName());
-		label.setProperties(body.getProperties());
+		label.setName(data.getName());
+		label.setProperties(data.getProperties());
 		lblRepository.update(label);
 		
 		RestResponse<LabelData> entity = this.getLabelById(label.getId());
@@ -323,7 +322,7 @@ public class LabelRestService extends RestService {
 		for (Label label : labelList) {
 			LabelData data = mapper.map(label, LabelData.class);
 			RestResponse<LabelData> item = (new RestResponse<>(data))
-					.addLink("self", LabelLinkSupport.buildSelfLink(data.getId()));
+					.addLink("self", LabelHateoas.buildSelfLink(data.getId()));
 			list.add(item);
 		}
 		return list;

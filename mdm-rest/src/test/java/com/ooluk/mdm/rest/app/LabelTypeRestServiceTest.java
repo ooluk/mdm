@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.ooluk.mdm.core.meta.app.LabelType;
 import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
-import com.ooluk.mdm.rest.dto.LabelTypeData;
+import com.ooluk.mdm.rest.app.dto.LabelTypeData;
 import com.ooluk.mdm.rest.test.RestServiceTest;
 import com.ooluk.mdm.rest.test.TestData;
 import com.ooluk.mdm.rest.test.TestUtils;

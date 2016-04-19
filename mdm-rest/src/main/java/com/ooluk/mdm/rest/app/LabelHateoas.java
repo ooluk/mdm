@@ -11,30 +11,40 @@ import org.apache.logging.log4j.Logger;
 import com.ooluk.mdm.rest.commons.MetaObjectNotFoundException;
 
 /**
- * Static methods to build links for label types.
+ * Collection of static methods to build HATEOAS links to label resources.
  * 
  * @author Siddhesh Prabhu
  * @since  1.0
  *
  */
-public class LabelTypeLinkSupport {
+public class LabelHateoas {
 
 	private static Logger LOGGER = LogManager.getLogger(); 
 	
 	public static URI buildSelfLink(Long id) {
 		URI uri = null;		
 		try {
-			uri = linkTo(methodOn(LabelTypeRestService.class).getTypeById(id)).toUri();
+			uri = linkTo(methodOn(LabelRestService.class).getLabelById(id)).toUri();
 		} catch (Exception e) {
 			LOGGER.log(Level.ERROR, e.getMessage(), e);
 		}
 		return uri;
 	}
 	
-	public static URI buildLabelsLink(Long id) throws MetaObjectNotFoundException {
+	public static URI buildChildrenLink(Long id) throws MetaObjectNotFoundException {
 		URI uri = null;		
 		try {
-			uri = linkTo(methodOn(LabelRestService.class).getLabels(id)).toUri();
+			uri = linkTo(methodOn(LabelRestService.class).getChildLabels(id)).toUri();
+		} catch (Exception e) {
+			LOGGER.log(Level.ERROR, e.getMessage(), e);
+		}
+		return uri;
+	}
+	
+	public static URI buildParentsLink(Long id) throws MetaObjectNotFoundException {
+		URI uri = null;		
+		try {
+			uri = linkTo(methodOn(LabelRestService.class).getParentLabels(id)).toUri();
 		} catch (Exception e) {
 			LOGGER.log(Level.ERROR, e.getMessage(), e);
 		}

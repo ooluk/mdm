@@ -1,14 +1,11 @@
 package com.ooluk.mdm.rest.validation;
 
 /**
- * An interface that allows an object to be validated.  
+ * A marker interface for objects that can be validated using {@link Validator}.
  * 
  * @author Siddhesh Prabhu
- * @since  1.0
+ * @since 1.0
  *
  */
-@FunctionalInterface
-public interface Validatable<T> {
-
-	ValidationResponse validate(T data);
+public interface Validatable<T extends Validatable<T>> {
 }

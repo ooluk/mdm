@@ -1,7 +1,7 @@
-package com.ooluk.mdm.rest.dto;
+package com.ooluk.mdm.rest.app.dto;
 
+import com.ooluk.mdm.rest.dto.MetaObjectData;
 import com.ooluk.mdm.rest.validation.Validatable;
-import com.ooluk.mdm.rest.validation.ValidationResponse;
 
 /**
  * 
@@ -25,15 +25,6 @@ public class LabelData extends MetaObjectData implements Validatable<LabelData> 
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	@Override
-	public ValidationResponse validate(LabelData data) {		
-		ValidationResponse vResult  = new ValidationResponse();		
-		if (name == null || name.trim().isEmpty()) {
-			vResult.addReason("Name is missing");
-		}		
-		return vResult;
 	}
 
 	@Override

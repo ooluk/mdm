@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ooluk.mdm.core.meta.MetaObjectType;
 import com.ooluk.mdm.core.meta.app.LabelType;
 import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
+import com.ooluk.mdm.rest.app.dto.LabelTypeData;
 import com.ooluk.mdm.rest.commons.MetaObjectNotFoundException;
 import com.ooluk.mdm.rest.commons.RestService;
-import com.ooluk.mdm.rest.dto.LabelTypeData;
 import com.ooluk.mdm.rest.dto.RestResponse;
 import com.ooluk.mdm.rest.validation.ValidationFailedException;
 
@@ -65,8 +65,8 @@ public class LabelTypeRestService extends RestService {
 		LabelTypeData data = mapper.map(type, LabelTypeData.class);
 		
 		return new RestResponse<>(data)
-				.addLink("self", LabelTypeLinkSupport.buildSelfLink(id))
-				.addLink("labels", LabelTypeLinkSupport.buildLabelsLink(id));
+				.addLink("self", LabelTypeHateoas.buildSelfLink(id))
+				.addLink("labels", LabelTypeHateoas.buildLabelsLink(id));
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public class LabelTypeRestService extends RestService {
 	public ResponseEntity<RestResponse<LabelTypeData>> createType( 
 			@RequestBody LabelTypeData data) throws ValidationFailedException {
 		
-		validator.<LabelTypeData>validate(data);
+		validator.validate(data);
 		
 		LabelType type = mapper.map(data, LabelType.class);
 		typeRepository.create(type);
@@ -109,7 +109,7 @@ public class LabelTypeRestService extends RestService {
 					+ "(ID=" + type.getId() + ")");
 		}
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("location", LabelTypeLinkSupport.buildSelfLink(type.getId()).toString());
+		headers.add("location", LabelTypeHateoas.buildSelfLink(type.getId()).toString());
 		return new ResponseEntity<>(body, headers, HttpStatus.CREATED);
 	}
 	
@@ -138,7 +138,7 @@ public class LabelTypeRestService extends RestService {
 		if (type == null) {
 			notFound(MetaObjectType.LABEL_TYPE, id);
 		}		
-		validator.<LabelTypeData>validate(data);
+		validator.validate(data);
 		
 		type.setName(data.getName());
 		type.setProperties(data.getProperties());
@@ -181,7 +181,7 @@ public class LabelTypeRestService extends RestService {
 		for (LabelType type : typeList) {
 			LabelTypeData data = mapper.map(type, LabelTypeData.class);
 			RestResponse<LabelTypeData> item = (new RestResponse<>(data))
-					.addLink("self", LabelTypeLinkSupport.buildSelfLink(data.getId()));
+					.addLink("self", LabelTypeHateoas.buildSelfLink(data.getId()));
 			list.add(item);
 		}
 		return list;
