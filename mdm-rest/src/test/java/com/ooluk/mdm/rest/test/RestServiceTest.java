@@ -6,6 +6,7 @@ import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,6 +21,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ooluk.mdm.core.meta.DynamicPropertiesCache;
+import com.ooluk.mdm.core.meta.DynamicPropertyRepository;
 import com.ooluk.mdm.core.meta.app.LabelRepository;
 import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
 
@@ -52,6 +55,15 @@ public class RestServiceTest {
 			mapper.setMappingFiles(Arrays.asList(new String[]{"dozer.xml"}));
 			return mapper;
 		}
+		
+		@Bean 
+		public DynamicPropertiesCache getDynamicPropertiesCache() {
+			DynamicPropertiesCache cache = new DynamicPropertiesCache();
+			DynamicPropertyRepository repository = Mockito.mock(DynamicPropertyRepository.class);
+			cache.setRepository(repository);
+			cache.build();
+			return cache; 
+		}	
 		
 		@Bean public LabelTypeRepository getLabelTypeRepository() { return null; }		
 		@Bean public LabelRepository getLabelRepository() { return null; }
