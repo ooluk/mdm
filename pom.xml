@@ -238,7 +238,7 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>mdm-core</module>
+		<module>mdm-data</module>
 		<module>mdm-rest</module>
 	</modules>
 </project>

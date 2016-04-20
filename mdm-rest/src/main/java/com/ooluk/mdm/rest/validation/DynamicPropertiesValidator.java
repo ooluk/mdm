@@ -20,7 +20,7 @@ public class DynamicPropertiesValidator {
 	@Autowired
 	private DynamicPropertiesCache cache;
 	
-	@Autowired 
+	//@Autowired 
 	private boolean validationEnabled;
 	
 	public ValidationResponse validate(DynamicProperties props) {

@@ -24,7 +24,7 @@
 
 		<dependency>
 			<groupId>com.ooluk.mdm</groupId>
-			<artifactId>mdm-core</artifactId>
+			<artifactId>mdm-data</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
