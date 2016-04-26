@@ -7,7 +7,7 @@ package com.ooluk.mdm.rest.commons;
  * @since 1.0
  *
  */
-public class BadRequestException extends Exception {
+public class BadRequestException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 	

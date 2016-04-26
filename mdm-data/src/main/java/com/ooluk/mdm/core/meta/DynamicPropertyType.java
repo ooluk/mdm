@@ -17,14 +17,22 @@ public enum DynamicPropertyType {
 	NUMBER,
 	
 	// List of values
-	SINGLE_CHOICE_LIST,	
-	MULTI_CHOICE_LIST,
+	SINGLE_CHOICE_TEXT_LIST,	
+	MULTI_CHOICE_TEXT_LIST,
+	SINGLE_CHOICE_NUMBER_LIST,	
+	MULTI_CHOICE_NUMBER_LIST,
 	
 	// Date & Time
 	DATE,	
-	DATE_TIME;
+	DATE_TIME,
+	
+	// Hyperlink
+	HYPERLINK;
 	
 	public boolean isListType() {
-		return this.equals(SINGLE_CHOICE_LIST) || this.equals(MULTI_CHOICE_LIST);
+		return this.equals(SINGLE_CHOICE_TEXT_LIST) || 
+				this.equals(MULTI_CHOICE_TEXT_LIST) || 
+				this.equals(MULTI_CHOICE_NUMBER_LIST) || 
+				this.equals(MULTI_CHOICE_NUMBER_LIST);
 	}
 }

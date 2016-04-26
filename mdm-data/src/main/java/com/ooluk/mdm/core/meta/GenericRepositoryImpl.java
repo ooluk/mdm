@@ -3,9 +3,10 @@ package com.ooluk.mdm.core.meta;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * GenericRepository implementation.
@@ -22,38 +23,36 @@ public abstract class GenericRepositoryImpl<T extends MetaObject> implements Gen
         this.cls = cls;
     }
     
-    @Autowired
-    protected SessionFactory sessionFactory;
+    @PersistenceContext
+    protected EntityManager em;
     
 	@Override
 	public T findById(Serializable id) {
-        Session session = getSession();
-        T entity = session.get(cls, id);
+        T entity = em.find(cls, id);
         return entity;        
 	}
 
 	@Override
 	public void create(T entity) {
-        Session session = getSession();
-        session.save(entity);
+        em.persist(entity);
 	}
 
 	@Override
 	public void update(T entity) {
-        Session session = getSession();
-        session.saveOrUpdate(entity);
+		// EntityManager has no saveOrUpdate equivalent
+        getSession().saveOrUpdate(entity);
 	}
 
 	@Override
 	public void delete(T entity) {
-        Session session = getSession();
-        session.delete(entity);		
+		// EntityManager's remove requires a persistent entity
+        getSession().delete(entity);		
 	}
 	
 	@SuppressWarnings ( "unchecked" )
 	@Override
 	public List<T> getAll() {
-        Session session = getSession();
+        Session session = em.unwrap(Session.class);
 		return session.createCriteria(cls).list();
 	}
 	
@@ -63,6 +62,6 @@ public abstract class GenericRepositoryImpl<T extends MetaObject> implements Gen
 	 * @return current session
 	 */
 	protected Session getSession() {
-		return sessionFactory.getCurrentSession();
+		return em.unwrap(Session.class);
 	}
 }

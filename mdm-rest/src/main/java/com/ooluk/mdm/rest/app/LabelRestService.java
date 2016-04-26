@@ -57,8 +57,7 @@ public class LabelRestService extends RestService {
 	 *             if a label with the specified ID is not found
 	 */
 	@RequestMapping ( value = "/{id}", method = GET, produces = APPLICATION_JSON_VALUE )
-	public RestResponse<LabelData> getLabelById(@PathVariable ( "id" ) Long id)
-			throws MetaObjectNotFoundException {
+	public RestResponse<LabelData> getLabelById(@PathVariable ( "id" ) Long id) {
 
 		Label label = lblRepository.findById(id);
 		if (label == null) {
@@ -84,8 +83,7 @@ public class LabelRestService extends RestService {
 	 *             if the label is not found
 	 */
 	@RequestMapping ( value = "/{id}/children", method = GET, produces = APPLICATION_JSON_VALUE )
-	public List<RestResponse<LabelData>> getChildLabels(@PathVariable ( "id" ) Long id) 
-			throws MetaObjectNotFoundException {
+	public List<RestResponse<LabelData>> getChildLabels(@PathVariable ( "id" ) Long id) {
 
 		Label lbl = lblRepository.findById(id);
 		if (lbl == null) {
@@ -106,8 +104,7 @@ public class LabelRestService extends RestService {
 	 *             if the label is not found
 	 */
 	@RequestMapping ( value = "/{id}/parents", method = GET, produces = APPLICATION_JSON_VALUE )
-	public List<RestResponse<LabelData>> getParentLabels(@PathVariable ( "id" ) Long id) 
-			throws MetaObjectNotFoundException {
+	public List<RestResponse<LabelData>> getParentLabels(@PathVariable ( "id" ) Long id) {
 		
 		Label lbl = lblRepository.findById(id);
 		if (lbl == null) {
@@ -143,8 +140,7 @@ public class LabelRestService extends RestService {
 	 * 			   if query parameters are missing 
 	 */
 	@RequestMapping ( method = GET, produces = APPLICATION_JSON_VALUE )
-	public List<RestResponse<LabelData>> getLabels(@RequestParam ("type") Long typeId) 
-			throws MetaObjectNotFoundException, BadRequestException {
+	public List<RestResponse<LabelData>> getLabels(@RequestParam ("type") Long typeId) {
 		
 		if (typeId == null) {
 			throw new BadRequestException("[type] parameter is mandatory.");
@@ -178,8 +174,7 @@ public class LabelRestService extends RestService {
 	 */
 	@RequestMapping ( value = "/type/{type}", method = POST, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelData>> createLabel(
-			@PathVariable ("type") Long typeId, @RequestBody LabelData data) 
-			throws ValidationFailedException, MetaObjectNotFoundException {
+			@PathVariable ("type") Long typeId, @RequestBody LabelData data) {
 		
 		LabelType type = typeRepository.findById(typeId);
 		if (type == null) {
@@ -213,8 +208,7 @@ public class LabelRestService extends RestService {
 	 */
 	@RequestMapping ( value = "/{id}", method = PUT, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelData>> updateLabel(
-			@PathVariable ("id") Long id, @RequestBody LabelData data) 
-			throws ValidationFailedException, MetaObjectNotFoundException {
+			@PathVariable ("id") Long id, @RequestBody LabelData data) {
 		
 		Label label = lblRepository.findById(id);
 		if (label == null) {
@@ -240,8 +234,7 @@ public class LabelRestService extends RestService {
 	 *             if label is not found
 	 */
 	@RequestMapping ( value = "/{id}", method = DELETE )
-	public ResponseEntity<Void> deleteLabel(@PathVariable ("id") Long id) 
-			throws MetaObjectNotFoundException {
+	public ResponseEntity<Void> deleteLabel(@PathVariable ("id") Long id) {
 		
 		Label label = lblRepository.findById(id);
 		if (label == null) {
@@ -264,7 +257,7 @@ public class LabelRestService extends RestService {
 	 */
 	@RequestMapping ( value = "/{pid}/child/{cid}", method = PUT )
 	public ResponseEntity<Void> addChildLabel(@PathVariable ("pid") Long pid, 
-			@PathVariable ("cid") Long cid) throws MetaObjectNotFoundException {
+			@PathVariable ("cid") Long cid) {
 		
 		Label label = lblRepository.findById(pid);
 		if (label == null) {

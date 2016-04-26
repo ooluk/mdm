@@ -9,7 +9,7 @@ import com.ooluk.mdm.core.meta.MetaObjectType;
  * @since  1.0
  *
  */
-public class MetaObjectNotFoundException extends Exception {
+public class MetaObjectNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 	

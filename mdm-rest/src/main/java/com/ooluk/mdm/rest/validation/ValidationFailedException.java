@@ -8,7 +8,7 @@ package com.ooluk.mdm.rest.validation;
  * @since 1.0
  *
  */
-public class ValidationFailedException extends Exception {
+public class ValidationFailedException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 	

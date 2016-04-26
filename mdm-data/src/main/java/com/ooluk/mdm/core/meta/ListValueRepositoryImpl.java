@@ -21,7 +21,7 @@ public class ListValueRepositoryImpl
 	
 	@Override
 	public ListValue findByValue(String value) {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = getSession();
 		return (ListValue) session.createCriteria(ListValue.class)
 			.add(Restrictions.eq("value", value)).uniqueResult();
 	}

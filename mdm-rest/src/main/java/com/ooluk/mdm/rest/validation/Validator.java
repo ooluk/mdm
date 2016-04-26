@@ -22,5 +22,5 @@ public interface Validator<T extends Validatable<T>> {
 	 * @throws ValidationFailedException
 	 *             if the validation fails
 	 */
-	public void validate(T data) throws ValidationFailedException;
+	public void validate(T data);
 }

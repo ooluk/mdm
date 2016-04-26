@@ -1,18 +1,12 @@
 package com.ooluk.mdm.core.meta;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
 import org.junit.Test;
 import org.springframework.context.annotation.Configuration;
 
-import com.ooluk.mdm.core.meta.DynamicProperty;
-import com.ooluk.mdm.core.meta.DynamicPropertyType;
-import com.ooluk.mdm.core.meta.ListValue;
-import com.ooluk.mdm.core.meta.PropertyGroup;
 import com.ooluk.mdm.core.test.AbstractRepositoryTest;
 import com.ooluk.mdm.core.test.EntityComparator;
 import com.ooluk.mdm.core.test.Tables;
@@ -96,7 +90,7 @@ public class DynamicPropertyRepositoryTest extends AbstractRepositoryTest {
 	 */		
 	@Test
 	public void findById_With_Value_List() {
-		DynamicProperty exp = createTestEntity(DynamicPropertyType.SINGLE_CHOICE_LIST);
+		DynamicProperty exp = createTestEntity(DynamicPropertyType.SINGLE_CHOICE_TEXT_LIST);
 		DynamicProperty act = dpRepository.findById(exp.getId());
 		EntityComparator.verifyEqual(exp, act);
 	}	
@@ -123,7 +117,7 @@ public class DynamicPropertyRepositoryTest extends AbstractRepositoryTest {
 	
 	@Test
 	public void update() {		
-		DynamicProperty exp = createTestEntity(DynamicPropertyType.SINGLE_CHOICE_LIST);	
+		DynamicProperty exp = createTestEntity(DynamicPropertyType.SINGLE_CHOICE_TEXT_LIST);	
 		
 		// Update
 		DynamicProperty dp = dpRepository.findById(exp.getId());
@@ -144,7 +138,7 @@ public class DynamicPropertyRepositoryTest extends AbstractRepositoryTest {
 	public void delete() {	
 		
 		// Prepare data
-		DynamicProperty dp = createTestEntity(DynamicPropertyType.SINGLE_CHOICE_LIST);
+		DynamicProperty dp = createTestEntity(DynamicPropertyType.SINGLE_CHOICE_TEXT_LIST);
 		super.verifyRowCount(Tables.LIST_VALUES, 2);
 		
 		// Delete

@@ -21,7 +21,7 @@ public class PropertyGroupRepositoryImpl
 	
 	@Override
 	public PropertyGroup findByName(String name) {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = getSession();
 		return (PropertyGroup) session.createCriteria(PropertyGroup.class)
 			.add(Restrictions.eq("name", name)).uniqueResult();
 	}

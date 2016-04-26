@@ -55,8 +55,7 @@ public class LabelTypeRestService extends RestService {
 	 *             if a label type with the specified ID is not found
 	 */
 	@RequestMapping ( value = "/{id}", method = GET, produces = APPLICATION_JSON_VALUE )
-	public RestResponse<LabelTypeData> getTypeById(@PathVariable ( "id" ) Long id)
-			throws MetaObjectNotFoundException {
+	public RestResponse<LabelTypeData> getTypeById(@PathVariable ( "id" ) Long id) {
 
 		LabelType type= typeRepository.findById(id);
 		if (type == null) {
@@ -93,7 +92,7 @@ public class LabelTypeRestService extends RestService {
 	 */
 	@RequestMapping ( method = POST, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelTypeData>> createType( 
-			@RequestBody LabelTypeData data) throws ValidationFailedException {
+			@RequestBody LabelTypeData data) {
 		
 		validator.validate(data);
 		
@@ -131,8 +130,7 @@ public class LabelTypeRestService extends RestService {
 	 */
 	@RequestMapping ( value = "/{id}", method = PUT, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelTypeData>> updateType( 
-			@PathVariable("id") Long id, @RequestBody LabelTypeData data)  
-			throws MetaObjectNotFoundException, ValidationFailedException {
+			@PathVariable("id") Long id, @RequestBody LabelTypeData data) {
 		
 		LabelType type = typeRepository.findById(id);
 		if (type == null) {
@@ -161,8 +159,7 @@ public class LabelTypeRestService extends RestService {
 	 * 
 	 */
 	@RequestMapping ( value = "/{id}", method = DELETE )
-	public ResponseEntity<Void> deleteType(@PathVariable("id") Long id) 
-			throws MetaObjectNotFoundException {
+	public ResponseEntity<Void> deleteType(@PathVariable("id") Long id) {
 		
 		LabelType type = typeRepository.findById(id);
 		if (type == null) {

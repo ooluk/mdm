@@ -8,8 +8,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.ooluk.mdm.rest.commons.MetaObjectNotFoundException;
-
 /**
  * Collection of static methods to build HATEOAS links to label resources.
  * 
@@ -31,7 +29,7 @@ public class LabelTypeHateoas {
 		return uri;
 	}
 	
-	public static URI buildLabelsLink(Long id) throws MetaObjectNotFoundException {
+	public static URI buildLabelsLink(Long id) {
 		URI uri = null;		
 		try {
 			uri = linkTo(methodOn(LabelRestService.class).getLabels(id)).toUri();

@@ -11,7 +11,7 @@ import com.ooluk.mdm.core.meta.MetaObjectType;
  * @since  1.0
  *
  */
-public class DuplicateKeyException extends Exception {
+public class MetaObjectExistsException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -29,7 +29,7 @@ public class DuplicateKeyException extends Exception {
 	 * @param key
 	 *            metaobject key
 	 */
-	public DuplicateKeyException(MetaObjectType type, String key) {
+	public MetaObjectExistsException(MetaObjectType type, String key) {
 		this.type = type;
 		this.key = key;
 	}
@@ -43,7 +43,7 @@ public class DuplicateKeyException extends Exception {
 	 * @param compositeKey
 	 *            metaobject composite key
 	 */
-	public DuplicateKeyException(MetaObjectType type, Map<String, Object> compositeKey) {
+	public MetaObjectExistsException(MetaObjectType type, Map<String, Object> compositeKey) {
 		this.type = type;
 		this.compositeKey = compositeKey;
 	}

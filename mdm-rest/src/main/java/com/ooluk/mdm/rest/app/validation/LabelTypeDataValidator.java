@@ -30,7 +30,7 @@ public class LabelTypeDataValidator implements Validator<LabelTypeData> {
 	}
 	
 	@Override
-	public void validate(LabelTypeData data) throws ValidationFailedException {		
+	public void validate(LabelTypeData data) {		
 		ValidationResponse result  = new ValidationResponse();	
 		if (data.getName() == null || data.getName().trim().isEmpty()) {
 			result.addReason("Name is missing");

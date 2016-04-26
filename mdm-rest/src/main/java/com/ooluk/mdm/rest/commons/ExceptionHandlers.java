@@ -26,8 +26,8 @@ public class ExceptionHandlers {
 	}
 	
 	// DuplicateKey ==> 409
-	@ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<String> customHandler(DuplicateKeyException ex) {
+	@ExceptionHandler(MetaObjectExistsException.class)
+    public ResponseEntity<String> customHandler(MetaObjectExistsException ex) {
 	    return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
 	}
 	

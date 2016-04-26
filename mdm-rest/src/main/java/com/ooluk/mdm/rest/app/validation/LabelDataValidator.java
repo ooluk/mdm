@@ -25,7 +25,7 @@ public class LabelDataValidator extends GenericValidator<LabelData> {
 	}
 	
 	@Override
-	public void validate(LabelData data) throws ValidationFailedException {		
+	public void validate(LabelData data) {		
 		ValidationResponse result  = new ValidationResponse();	
 		if (data.getName() == null || data.getName().trim().isEmpty()) {
 			result.addReason("Name is missing");
