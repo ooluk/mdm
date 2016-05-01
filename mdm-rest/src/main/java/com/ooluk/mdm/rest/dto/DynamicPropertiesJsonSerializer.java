@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.ooluk.mdm.data.meta.DynamicProperties;
 
 /**
- * A custom JSON serializer for {@link DynamicProperties}. MetaObjectPrjection maintains dynamic
+ * A custom JSON serializer for {@link DynamicProperties}. {@link MetaObjectData} maintains dynamic
  * properties using a field called "properties". DynamicProperties itself maintains its properties
  * as a Map called "properties". This causes the default JSON to appear as
  * <code>{... "properties": {"properties": {}}}</code>.
@@ -20,6 +20,7 @@ import com.ooluk.mdm.data.meta.DynamicProperties;
  * 
  * @author Siddhesh Prabhu
  * @since 1.0
+ * @see DynamicPropertiesJsonDeserializer
  *
  */
 public class DynamicPropertiesJsonSerializer extends JsonSerializer<DynamicProperties> {

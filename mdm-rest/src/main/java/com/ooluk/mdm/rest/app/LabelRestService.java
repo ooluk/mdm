@@ -179,15 +179,15 @@ public class LabelRestService extends RestService {
 	 *             if label type is not found
 	 */
 	@Transactional 
-	@RequestMapping ( value = "/type/{type}", method = POST, consumes = APPLICATION_JSON_VALUE )
-	public ResponseEntity<RestResponse<LabelData>> createLabel(
-			@PathVariable ("type") Long typeId, @RequestBody LabelData data) {
-		
+	@RequestMapping ( method = POST, consumes = APPLICATION_JSON_VALUE )
+	public ResponseEntity<RestResponse<LabelData>> createLabel(@RequestBody LabelData data) {
+
+		validator.validate(data);
+		Long typeId = data.getType().getId();
 		LabelType type = typeRepository.findById(typeId);
 		if (type == null) {
 			notFound(MetaObjectType.LABEL_TYPE, typeId);
 		}
-		validator.validate(data);
 		
 		Label label = mapper.map(data, Label.class);
 		label.setType(type);
@@ -217,12 +217,12 @@ public class LabelRestService extends RestService {
 	@RequestMapping ( value = "/{id}", method = PUT, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelData>> updateLabel(
 			@PathVariable ("id") Long id, @RequestBody LabelData data) {
-		
+
+		validator.validate(data);
 		Label label = lblRepository.findById(id);
 		if (label == null) {
 			notFound(MetaObjectType.LABEL, id);
 		}
-		validator.validate(data);
 		
 		label.setName(data.getName());
 		label.setProperties(data.getProperties());

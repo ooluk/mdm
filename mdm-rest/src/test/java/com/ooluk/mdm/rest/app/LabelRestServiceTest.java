@@ -27,6 +27,7 @@ import com.ooluk.mdm.data.meta.app.LabelRepository;
 import com.ooluk.mdm.data.meta.app.LabelType;
 import com.ooluk.mdm.data.meta.app.LabelTypeRepository;
 import com.ooluk.mdm.rest.app.dto.LabelData;
+import com.ooluk.mdm.rest.app.dto.LabelTypeData;
 import com.ooluk.mdm.rest.test.RestServiceTest;
 import com.ooluk.mdm.rest.test.TestData;
 import com.ooluk.mdm.rest.test.TestUtils;
@@ -74,10 +75,19 @@ public class LabelRestServiceTest extends RestServiceTest {
 		lbl.getParents().add(p2);
 		return lbl;
 	}
+	
+	private LabelTypeData getTypeData() {
+		LabelTypeData type = new LabelTypeData();
+		type.setId(1L);
+		type.setName("T1");
+		type.setProperties(TestData.getDynamicProperties());
+		return type;
+	}
 
 	private LabelData getLabelData() {
 		LabelData label = new LabelData();
 		label.setId(1L);
+		label.setType(getTypeData());
 		label.setName("L1");
 		label.setProperties(TestData.getDynamicProperties());
 		return label;
@@ -229,7 +239,7 @@ public class LabelRestServiceTest extends RestServiceTest {
 		Mockito.when(lblRepo.findById(1L)).thenReturn(label);
 		
 		String content = jsonMapper.writeValueAsString(getLabelData());
-		mvc.perform(post("/labels/type/" + type.getId())
+		mvc.perform(post("/labels")
 				.contentType(MediaType.APPLICATION_JSON).content(content)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated())
@@ -241,7 +251,7 @@ public class LabelRestServiceTest extends RestServiceTest {
 	public void createLabel_Type_Not_Found() throws Exception {		
 		Mockito.when(typeRepo.findById(Mockito.anyLong())).thenReturn(null);		
 		String content = jsonMapper.writeValueAsString(getLabelData());
-		mvc.perform(post("/labels/type/1")
+		mvc.perform(post("/labels")
 				.contentType(MediaType.APPLICATION_JSON).content(content)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -252,7 +262,7 @@ public class LabelRestServiceTest extends RestServiceTest {
 		Mockito.when(typeRepo.findById(1L)).thenReturn(new LabelType());		
 		LabelData data = getLabelData(); data.setName("");		
 		String content = jsonMapper.writeValueAsString(data);
-		mvc.perform(post("/labels/type/1")
+		mvc.perform(post("/labels")
 				.contentType(MediaType.APPLICATION_JSON).content(content)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
