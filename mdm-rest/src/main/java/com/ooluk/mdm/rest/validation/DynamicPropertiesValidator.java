@@ -3,9 +3,9 @@ package com.ooluk.mdm.rest.validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ooluk.mdm.core.meta.DynamicProperties;
-import com.ooluk.mdm.core.meta.DynamicPropertiesCache;
-import com.ooluk.mdm.core.meta.DynamicProperty;
+import com.ooluk.mdm.data.meta.DynamicProperties;
+import com.ooluk.mdm.data.meta.DynamicPropertiesCache;
+import com.ooluk.mdm.data.meta.DynamicProperty;
 
 /**
  * Validator for dynamic properties.

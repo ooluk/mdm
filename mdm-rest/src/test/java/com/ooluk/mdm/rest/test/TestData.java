@@ -5,22 +5,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.ooluk.mdm.core.meta.DynamicProperties;
-import com.ooluk.mdm.core.meta.DynamicProperty;
-import com.ooluk.mdm.core.meta.DynamicPropertyType;
-import com.ooluk.mdm.core.meta.ListValue;
-import com.ooluk.mdm.core.meta.MetaObjectType;
-import com.ooluk.mdm.core.meta.PropertyGroup;
-import com.ooluk.mdm.core.meta.VisualAttributes;
-import com.ooluk.mdm.core.meta.app.Label;
-import com.ooluk.mdm.core.meta.app.LabelType;
-import com.ooluk.mdm.core.meta.app.Tag;
-import com.ooluk.mdm.core.meta.attribute.Attribute;
-import com.ooluk.mdm.core.meta.attribute.AttributeNote;
-import com.ooluk.mdm.core.meta.dataobject.DataObject;
-import com.ooluk.mdm.core.meta.dataobject.DataObjectNote;
-import com.ooluk.mdm.core.meta.dataobject.Namespace;
-import com.ooluk.mdm.core.meta.index.Index;
+import com.ooluk.mdm.data.meta.DynamicProperties;
+import com.ooluk.mdm.data.meta.DynamicProperty;
+import com.ooluk.mdm.data.meta.DynamicPropertyType;
+import com.ooluk.mdm.data.meta.ListValue;
+import com.ooluk.mdm.data.meta.MetaObjectType;
+import com.ooluk.mdm.data.meta.PropertyGroup;
+import com.ooluk.mdm.data.meta.VisualAttributes;
+import com.ooluk.mdm.data.meta.app.Label;
+import com.ooluk.mdm.data.meta.app.LabelType;
+import com.ooluk.mdm.data.meta.app.Tag;
+import com.ooluk.mdm.data.meta.attribute.Attribute;
+import com.ooluk.mdm.data.meta.attribute.AttributeNote;
+import com.ooluk.mdm.data.meta.dataobject.DataObject;
+import com.ooluk.mdm.data.meta.dataobject.DataObjectNote;
+import com.ooluk.mdm.data.meta.dataobject.Namespace;
+import com.ooluk.mdm.data.meta.index.Index;
 
 /**
  * Class for building in-memory representation of test data. 

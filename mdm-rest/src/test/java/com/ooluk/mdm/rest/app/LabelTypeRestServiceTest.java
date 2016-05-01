@@ -22,8 +22,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.ooluk.mdm.core.meta.app.LabelType;
-import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
+import com.ooluk.mdm.data.meta.app.LabelType;
+import com.ooluk.mdm.data.meta.app.LabelTypeRepository;
 import com.ooluk.mdm.rest.app.dto.LabelTypeData;
 import com.ooluk.mdm.rest.test.RestServiceTest;
 import com.ooluk.mdm.rest.test.TestData;

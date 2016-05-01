@@ -3,7 +3,7 @@ package com.ooluk.mdm.rest.test.matchers;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-import com.ooluk.mdm.core.meta.MetaObjectType;
+import com.ooluk.mdm.data.meta.MetaObjectType;
 import com.ooluk.mdm.rest.commons.MetaObjectNotFoundException;
 
 /**

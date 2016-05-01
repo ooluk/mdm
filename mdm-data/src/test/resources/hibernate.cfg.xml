@@ -18,7 +18,7 @@
         <property name="connection.pool_size">1</property>
 
         <!-- SQL dialect -->
-        <property name="hibernate.dialect">com.ooluk.mdm.core.hibernate.CustomPostgreSQLDialect</property>
+        <property name="hibernate.dialect">com.ooluk.mdm.data.hibernate.CustomPostgreSQLDialect</property>
 
         <!-- Enable Hibernate's automatic session context management -->
         <property name="current_session_context_class">thread</property>
@@ -33,30 +33,30 @@
         <property name="hibernate.search.default.directory_provider">filesystem</property>
         <property name="hibernate.search.default.indexBase">D:/TEMP/fts</property>
  
-		<mapping class="com.ooluk.mdm.core.meta.PropertyGroup"/>  
-		<mapping class="com.ooluk.mdm.core.meta.DynamicProperty"/> 
-		<mapping class="com.ooluk.mdm.core.meta.ListValue"/>  
+		<mapping class="com.ooluk.mdm.data.meta.PropertyGroup"/>  
+		<mapping class="com.ooluk.mdm.data.meta.DynamicProperty"/> 
+		<mapping class="com.ooluk.mdm.data.meta.ListValue"/>  
 		
-		<mapping class="com.ooluk.mdm.core.meta.app.User"/>           
-		<mapping class="com.ooluk.mdm.core.meta.app.Role"/>         
-		<mapping class="com.ooluk.mdm.core.meta.app.LabelType"/>      
-		<mapping class="com.ooluk.mdm.core.meta.app.Label"/>        
-		<mapping class="com.ooluk.mdm.core.meta.app.Tag"/>
+		<mapping class="com.ooluk.mdm.data.meta.app.User"/>           
+		<mapping class="com.ooluk.mdm.data.meta.app.Role"/>         
+		<mapping class="com.ooluk.mdm.data.meta.app.LabelType"/>      
+		<mapping class="com.ooluk.mdm.data.meta.app.Label"/>        
+		<mapping class="com.ooluk.mdm.data.meta.app.Tag"/>
 		       
-		<mapping class="com.ooluk.mdm.core.meta.dataobject.Namespace"/>     
-		<mapping class="com.ooluk.mdm.core.meta.dataobject.DataObject"/>     
-		<mapping class="com.ooluk.mdm.core.meta.dataobject.DataObjectSourceMappingKey"/>
-		<mapping class="com.ooluk.mdm.core.meta.dataobject.DataObjectSourceMapping"/>   
-		<mapping class="com.ooluk.mdm.core.meta.dataobject.DataObjectNote"/>
+		<mapping class="com.ooluk.mdm.data.meta.dataobject.Namespace"/>     
+		<mapping class="com.ooluk.mdm.data.meta.dataobject.DataObject"/>     
+		<mapping class="com.ooluk.mdm.data.meta.dataobject.DataObjectSourceMappingKey"/>
+		<mapping class="com.ooluk.mdm.data.meta.dataobject.DataObjectSourceMapping"/>   
+		<mapping class="com.ooluk.mdm.data.meta.dataobject.DataObjectNote"/>
 		
-		<mapping class="com.ooluk.mdm.core.meta.attribute.Attribute"/>        
-		<mapping class="com.ooluk.mdm.core.meta.attribute.AttributeSourceMappingKey"/>
-		<mapping class="com.ooluk.mdm.core.meta.attribute.AttributeSourceMapping"/>  
-		<mapping class="com.ooluk.mdm.core.meta.attribute.AttributeNote"/>  
+		<mapping class="com.ooluk.mdm.data.meta.attribute.Attribute"/>        
+		<mapping class="com.ooluk.mdm.data.meta.attribute.AttributeSourceMappingKey"/>
+		<mapping class="com.ooluk.mdm.data.meta.attribute.AttributeSourceMapping"/>  
+		<mapping class="com.ooluk.mdm.data.meta.attribute.AttributeNote"/>  
 		               
-		<mapping class="com.ooluk.mdm.core.meta.index.Index"/> 
-		<mapping class="com.ooluk.mdm.core.meta.index.IndexAttributeMappingKey"/> 
-		<mapping class="com.ooluk.mdm.core.meta.index.IndexAttributeMapping"/>
+		<mapping class="com.ooluk.mdm.data.meta.index.Index"/> 
+		<mapping class="com.ooluk.mdm.data.meta.index.IndexAttributeMappingKey"/> 
+		<mapping class="com.ooluk.mdm.data.meta.index.IndexAttributeMapping"/>
 
     </session-factory>
 

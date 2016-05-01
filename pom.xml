@@ -8,8 +8,32 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>mdm</name>
+	<name>Metadata Manager</name>
 	<description>Metadata Manager</description>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+        			<compilerArgument>-proc:none</compilerArgument>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,6 +52,7 @@
 		<json-path-version>2.2.0</json-path-version>
 		<dozer-version>5.5.1</dozer-version>
 		<postgresql-version>9.4-1201-jdbc41</postgresql-version>
+		<mdm-version>1.0.0-SNAPSHOT</mdm-version>
 	</properties>
 
 	<dependencies>
@@ -77,12 +102,12 @@
 			<artifactId>junit</artifactId>
 			<version>${junit-version}</version>
 			<scope>test</scope>
-		   	<exclusions>
-		        <exclusion>
-		            <groupId>org.hamcrest</groupId>
-		            <artifactId>hamcrest-core</artifactId>
-		        </exclusion>
-		    </exclusions>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -90,12 +115,12 @@
 			<artifactId>mockito-core</artifactId>
 			<version>${mockito-version}</version>
 			<scope>test</scope>
-		   	<exclusions>
-		        <exclusion>
-		            <groupId>org.hamcrest</groupId>
-		            <artifactId>hamcrest-core</artifactId>
-		        </exclusion>
-		    </exclusions>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -104,7 +129,7 @@
 			<version>${hamcrest-version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 
 	<dependencyManagement>
@@ -126,11 +151,17 @@
 				<artifactId>hibernate-core</artifactId>
 				<version>${hibernate-core-version}</version>
 			</dependency>
-			
+
 			<dependency>
-			   <groupId>org.hibernate</groupId>
-			   <artifactId>hibernate-entitymanager</artifactId>
-			   <version>${hibernate-core-version}</version>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate-core-version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-jpamodelgen</artifactId>
+				<version>${hibernate-core-version}</version>
 			</dependency>
 
 			<dependency>
@@ -246,5 +277,6 @@
 	<modules>
 		<module>mdm-data</module>
 		<module>mdm-rest</module>
+		<module>mdm-server</module>
 	</modules>
 </project>

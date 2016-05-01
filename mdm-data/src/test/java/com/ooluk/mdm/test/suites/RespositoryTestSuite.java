@@ -3,20 +3,20 @@ package com.ooluk.mdm.test.suites;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import com.ooluk.mdm.core.meta.DynamicPropertyRepositoryTest;
-import com.ooluk.mdm.core.meta.PropertyGroupRepositoryTest;
-import com.ooluk.mdm.core.meta.app.LabelRepositoryTest;
-import com.ooluk.mdm.core.meta.app.LabelTypeRepositoryTest;
-import com.ooluk.mdm.core.meta.app.TagRepositoryTest;
-import com.ooluk.mdm.core.meta.attribute.AttributeNoteRepositoryTest;
-import com.ooluk.mdm.core.meta.attribute.AttributeRepositoryTest;
-import com.ooluk.mdm.core.meta.attribute.AttributeSourceRepositoryTest;
-import com.ooluk.mdm.core.meta.dataobject.DataObjectNoteRepositoryTest;
-import com.ooluk.mdm.core.meta.dataobject.DataObjectRepositoryTest;
-import com.ooluk.mdm.core.meta.dataobject.DataObjectSourceRepositoryTest;
-import com.ooluk.mdm.core.meta.dataobject.NamespaceRepositoryTest;
-import com.ooluk.mdm.core.meta.index.IndexAttributeRepositoryTest;
-import com.ooluk.mdm.core.meta.index.IndexRepositoryTest;
+import com.ooluk.mdm.data.data.dataobject.DataObjectNoteRepositoryTest;
+import com.ooluk.mdm.data.data.dataobject.DataObjectRepositoryTest;
+import com.ooluk.mdm.data.data.dataobject.DataObjectSourceRepositoryTest;
+import com.ooluk.mdm.data.data.dataobject.NamespaceRepositoryTest;
+import com.ooluk.mdm.data.meta.DynamicPropertyRepositoryTest;
+import com.ooluk.mdm.data.meta.PropertyGroupRepositoryTest;
+import com.ooluk.mdm.data.meta.app.LabelRepositoryTest;
+import com.ooluk.mdm.data.meta.app.LabelTypeRepositoryTest;
+import com.ooluk.mdm.data.meta.app.TagRepositoryTest;
+import com.ooluk.mdm.data.meta.attribute.AttributeNoteRepositoryTest;
+import com.ooluk.mdm.data.meta.attribute.AttributeRepositoryTest;
+import com.ooluk.mdm.data.meta.attribute.AttributeSourceRepositoryTest;
+import com.ooluk.mdm.data.meta.index.IndexAttributeRepositoryTest;
+import com.ooluk.mdm.data.meta.index.IndexRepositoryTest;
 
 /**
  * Test suite for repositories.

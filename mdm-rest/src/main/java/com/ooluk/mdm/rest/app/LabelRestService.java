@@ -11,17 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ooluk.mdm.core.meta.MetaObjectType;
-import com.ooluk.mdm.core.meta.app.Label;
-import com.ooluk.mdm.core.meta.app.LabelRepository;
-import com.ooluk.mdm.core.meta.app.LabelType;
-import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
+import com.ooluk.mdm.data.meta.MetaObjectType;
+import com.ooluk.mdm.data.meta.app.Label;
+import com.ooluk.mdm.data.meta.app.LabelRepository;
+import com.ooluk.mdm.data.meta.app.LabelType;
+import com.ooluk.mdm.data.meta.app.LabelTypeRepository;
 import com.ooluk.mdm.rest.app.dto.LabelData;
 import com.ooluk.mdm.rest.commons.BadRequestException;
 import com.ooluk.mdm.rest.commons.MetaObjectNotFoundException;
@@ -56,6 +57,7 @@ public class LabelRestService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if a label with the specified ID is not found
 	 */
+	@Transactional (readOnly = true)
 	@RequestMapping ( value = "/{id}", method = GET, produces = APPLICATION_JSON_VALUE )
 	public RestResponse<LabelData> getLabelById(@PathVariable ( "id" ) Long id) {
 
@@ -66,9 +68,9 @@ public class LabelRestService extends RestService {
 		LabelData lbl = mapper.map(label, LabelData.class);
 		
 		return new RestResponse<>(lbl)
-				.addLink("self", LabelHateoas.buildSelfLink(id))
-				.addLink("children", LabelHateoas.buildChildrenLink(id))
-				.addLink("parents", LabelHateoas.buildParentsLink(id));
+				.addLink("self", LabelLinks.buildSelfLink(id))
+				.addLink("children", LabelLinks.buildChildrenLink(id))
+				.addLink("parents", LabelLinks.buildParentsLink(id));
 	}
 
 	/**
@@ -82,6 +84,7 @@ public class LabelRestService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if the label is not found
 	 */
+	@Transactional (readOnly = true)
 	@RequestMapping ( value = "/{id}/children", method = GET, produces = APPLICATION_JSON_VALUE )
 	public List<RestResponse<LabelData>> getChildLabels(@PathVariable ( "id" ) Long id) {
 
@@ -103,6 +106,7 @@ public class LabelRestService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if the label is not found
 	 */
+	@Transactional (readOnly = true)
 	@RequestMapping ( value = "/{id}/parents", method = GET, produces = APPLICATION_JSON_VALUE )
 	public List<RestResponse<LabelData>> getParentLabels(@PathVariable ( "id" ) Long id) {
 		
@@ -118,6 +122,7 @@ public class LabelRestService extends RestService {
 	 * 
 	 * @return list of labels without parent labels
 	 */
+	@Transactional (readOnly = true)
 	@RequestMapping ( value = "/roots", method = GET, produces = APPLICATION_JSON_VALUE )
 	public List<RestResponse<LabelData>> getRootLabels() {
 		
@@ -139,6 +144,7 @@ public class LabelRestService extends RestService {
 	 * @throws BadRequestException
 	 * 			   if query parameters are missing 
 	 */
+	@Transactional (readOnly = true)
 	@RequestMapping ( method = GET, produces = APPLICATION_JSON_VALUE )
 	public List<RestResponse<LabelData>> getLabels(@RequestParam ("type") Long typeId) {
 		
@@ -172,6 +178,7 @@ public class LabelRestService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if label type is not found
 	 */
+	@Transactional 
 	@RequestMapping ( value = "/type/{type}", method = POST, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelData>> createLabel(
 			@PathVariable ("type") Long typeId, @RequestBody LabelData data) {
@@ -188,7 +195,7 @@ public class LabelRestService extends RestService {
 		
 		RestResponse<LabelData> entity = this.getLabelById(label.getId());
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("location", LabelHateoas.buildSelfLink(label.getId()).toString());
+		headers.add("location", LabelLinks.buildSelfLink(label.getId()).toString());
 		return new ResponseEntity<>(entity, headers, HttpStatus.CREATED);
 	}
 	
@@ -206,6 +213,7 @@ public class LabelRestService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if label is not found
 	 */
+	@Transactional 
 	@RequestMapping ( value = "/{id}", method = PUT, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelData>> updateLabel(
 			@PathVariable ("id") Long id, @RequestBody LabelData data) {
@@ -233,6 +241,7 @@ public class LabelRestService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if label is not found
 	 */
+	@Transactional 
 	@RequestMapping ( value = "/{id}", method = DELETE )
 	public ResponseEntity<Void> deleteLabel(@PathVariable ("id") Long id) {
 		
@@ -255,6 +264,7 @@ public class LabelRestService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if parent or child label is not found
 	 */
+	@Transactional 
 	@RequestMapping ( value = "/{pid}/child/{cid}", method = PUT )
 	public ResponseEntity<Void> addChildLabel(@PathVariable ("pid") Long pid, 
 			@PathVariable ("cid") Long cid) {
@@ -286,6 +296,7 @@ public class LabelRestService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if parent or child label is not found
 	 */
+	@Transactional 
 	@RequestMapping ( value = "/{pid}/child/{cid}", method = DELETE )
 	public ResponseEntity<Void> removeChildLabel(@PathVariable ("pid") Long pid, 
 			@PathVariable ("cid") Long cid) throws MetaObjectNotFoundException {
@@ -315,7 +326,7 @@ public class LabelRestService extends RestService {
 		for (Label label : labelList) {
 			LabelData data = mapper.map(label, LabelData.class);
 			RestResponse<LabelData> item = (new RestResponse<>(data))
-					.addLink("self", LabelHateoas.buildSelfLink(data.getId()));
+					.addLink("self", LabelLinks.buildSelfLink(data.getId()));
 			list.add(item);
 		}
 		return list;

@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>com.ooluk.mdm</groupId>
+		<artifactId>mdm</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	
+	<groupId>com.ooluk.mdm-server</groupId>
+	<artifactId>mdm-server</artifactId>
+	<packaging>war</packaging>
+	
+	<name>Metadata Manager Server</name>
+	<description>Metadata Manager Server</description>
+
+	<build>
+		<finalName>mdm</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ooluk.mdm</groupId>
+			<artifactId>mdm-data</artifactId>
+			<version>${mdm-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ooluk.mdm</groupId>
+			<artifactId>mdm-rest</artifactId>
+			<version>${mdm-version}</version>
+		</dependency>
+	
+	</dependencies>
+	
+</project>

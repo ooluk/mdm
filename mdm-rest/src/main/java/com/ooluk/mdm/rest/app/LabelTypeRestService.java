@@ -13,14 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ooluk.mdm.core.meta.MetaObjectType;
-import com.ooluk.mdm.core.meta.app.LabelType;
-import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
+import com.ooluk.mdm.data.meta.MetaObjectType;
+import com.ooluk.mdm.data.meta.app.LabelType;
+import com.ooluk.mdm.data.meta.app.LabelTypeRepository;
 import com.ooluk.mdm.rest.app.dto.LabelTypeData;
 import com.ooluk.mdm.rest.commons.MetaObjectNotFoundException;
 import com.ooluk.mdm.rest.commons.RestService;
@@ -54,6 +55,7 @@ public class LabelTypeRestService extends RestService {
 	 * @throws MetaObjectNotFoundException
 	 *             if a label type with the specified ID is not found
 	 */
+	@Transactional (readOnly = true)
 	@RequestMapping ( value = "/{id}", method = GET, produces = APPLICATION_JSON_VALUE )
 	public RestResponse<LabelTypeData> getTypeById(@PathVariable ( "id" ) Long id) {
 
@@ -64,8 +66,8 @@ public class LabelTypeRestService extends RestService {
 		LabelTypeData data = mapper.map(type, LabelTypeData.class);
 		
 		return new RestResponse<>(data)
-				.addLink("self", LabelTypeHateoas.buildSelfLink(id))
-				.addLink("labels", LabelTypeHateoas.buildLabelsLink(id));
+				.addLink("self", LabelTypeLinks.buildSelfLink(id))
+				.addLink("labels", LabelTypeLinks.buildLabelsLink(id));
 	}
 	
 	/**
@@ -73,6 +75,7 @@ public class LabelTypeRestService extends RestService {
 	 * 
 	 * @return list of label types
 	 */
+	@Transactional (readOnly = true)
 	@RequestMapping ( method = GET, produces = APPLICATION_JSON_VALUE )
 	public List<RestResponse<LabelTypeData>> getTypes() {		
 		return getLabelTypeDataList(typeRepository.getAll());
@@ -90,6 +93,7 @@ public class LabelTypeRestService extends RestService {
 	 *             if validation of the label type data fails
 	 *             
 	 */
+	@Transactional
 	@RequestMapping ( method = POST, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelTypeData>> createType( 
 			@RequestBody LabelTypeData data) {
@@ -108,7 +112,7 @@ public class LabelTypeRestService extends RestService {
 					+ "(ID=" + type.getId() + ")");
 		}
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("location", LabelTypeHateoas.buildSelfLink(type.getId()).toString());
+		headers.add("location", LabelTypeLinks.buildSelfLink(type.getId()).toString());
 		return new ResponseEntity<>(body, headers, HttpStatus.CREATED);
 	}
 	
@@ -128,6 +132,7 @@ public class LabelTypeRestService extends RestService {
 	 *             if validation of the label type data fails
 	 * 
 	 */
+	@Transactional
 	@RequestMapping ( value = "/{id}", method = PUT, consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelTypeData>> updateType( 
 			@PathVariable("id") Long id, @RequestBody LabelTypeData data) {
@@ -158,6 +163,7 @@ public class LabelTypeRestService extends RestService {
 	 *             if a label type with the specified ID is not found
 	 * 
 	 */
+	@Transactional
 	@RequestMapping ( value = "/{id}", method = DELETE )
 	public ResponseEntity<Void> deleteType(@PathVariable("id") Long id) {
 		
@@ -178,7 +184,7 @@ public class LabelTypeRestService extends RestService {
 		for (LabelType type : typeList) {
 			LabelTypeData data = mapper.map(type, LabelTypeData.class);
 			RestResponse<LabelTypeData> item = (new RestResponse<>(data))
-					.addLink("self", LabelTypeHateoas.buildSelfLink(data.getId()));
+					.addLink("self", LabelTypeLinks.buildSelfLink(data.getId()));
 			list.add(item);
 		}
 		return list;

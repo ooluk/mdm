@@ -7,7 +7,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.ooluk.mdm.core.meta.DynamicProperties;
+import com.ooluk.mdm.data.meta.DynamicProperties;
 
 /**
  * This performs deserialization of dynamic properties. See {@link DynamicPropertiesJsonSerializer}

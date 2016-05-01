@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.ooluk.mdm.core.meta.DynamicProperties;
+import com.ooluk.mdm.data.meta.DynamicProperties;
 
 /**
  * A custom JSON serializer for {@link DynamicProperties}. MetaObjectPrjection maintains dynamic

@@ -21,15 +21,15 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ooluk.mdm.core.meta.DynamicPropertiesCache;
-import com.ooluk.mdm.core.meta.DynamicPropertyRepository;
-import com.ooluk.mdm.core.meta.app.LabelRepository;
-import com.ooluk.mdm.core.meta.app.LabelTypeRepository;
+import com.ooluk.mdm.data.meta.DynamicPropertiesCache;
+import com.ooluk.mdm.data.meta.DynamicPropertyRepository;
+import com.ooluk.mdm.data.meta.app.LabelRepository;
+import com.ooluk.mdm.data.meta.app.LabelTypeRepository;
 
 @RunWith ( SpringJUnit4ClassRunner.class )
 @ContextConfiguration
 @WebAppConfiguration
-public class RestServiceTest {
+public abstract class RestServiceTest {
 	
     @Autowired
     protected WebApplicationContext wac;

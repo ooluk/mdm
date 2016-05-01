@@ -7,7 +7,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
-import com.ooluk.mdm.core.meta.DynamicProperties;
+import com.ooluk.mdm.data.meta.DynamicProperties;
 import com.ooluk.mdm.rest.test.TestData;
 
 /**

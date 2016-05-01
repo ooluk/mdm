@@ -2,7 +2,7 @@ package com.ooluk.mdm.rest.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.ooluk.mdm.core.meta.DynamicProperties;
+import com.ooluk.mdm.data.meta.DynamicProperties;
 
 /**
  * Common attributes for all meta objects. 

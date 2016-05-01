@@ -2,7 +2,7 @@ package com.ooluk.mdm.rest.dto;
 
 import org.dozer.DozerConverter;
 
-import com.ooluk.mdm.core.meta.DynamicProperties;
+import com.ooluk.mdm.data.meta.DynamicProperties;
 
 /**
  * Custom mapper for DynamicProperties. This is required because dynamic properties are maintained
