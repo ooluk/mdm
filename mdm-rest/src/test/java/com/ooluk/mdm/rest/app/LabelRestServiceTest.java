@@ -31,6 +31,7 @@ import com.ooluk.mdm.rest.app.dto.LabelTypeData;
 import com.ooluk.mdm.rest.test.RestServiceTest;
 import com.ooluk.mdm.rest.test.TestData;
 import com.ooluk.mdm.rest.test.TestUtils;
+import com.ooluk.mdm.rest.validation.VM;
 
 @ContextConfiguration
 public class LabelRestServiceTest extends RestServiceTest {
@@ -93,6 +94,11 @@ public class LabelRestServiceTest extends RestServiceTest {
 		return label;
 	}
 
+	/*
+	 * --------------------------------------------
+	 * GET: /labels/{id}
+	 * --------------------------------------------
+	 */
 	@Test
 	public void getLabelById() throws Exception {
 		Mockito.when(lblRepo.findById(1L)).thenReturn(getLabel());
@@ -115,6 +121,11 @@ public class LabelRestServiceTest extends RestServiceTest {
 				.andExpect(status().isNotFound());
 	}
 
+	/*
+	 * --------------------------------------------
+	 * GET: /labels/{id}/children
+	 * --------------------------------------------
+	 */
 	@Test
 	public void getChildLabels() throws Exception {
 		Mockito.when(lblRepo.findById(1L)).thenReturn(getLabel());
@@ -137,6 +148,11 @@ public class LabelRestServiceTest extends RestServiceTest {
 				.andExpect(jsonPath("$.length()").value(0));
 	}
 
+	/*
+	 * --------------------------------------------
+	 * GET: /labels/{id}/parents
+	 * --------------------------------------------
+	 */
 	@Test
 	public void getParentsLabels() throws Exception {
 		Mockito.when(lblRepo.findById(1L)).thenReturn(getLabel());
@@ -159,6 +175,11 @@ public class LabelRestServiceTest extends RestServiceTest {
 				.andExpect(jsonPath("$.length()").value(0));
 	}
 
+	/*
+	 * --------------------------------------------
+	 * GET: /labels/roots
+	 * --------------------------------------------
+	 */
 	@Test
 	public void getRootLabels() throws Exception {
 		// Return parents of test label - any set of labels is fine
@@ -180,6 +201,11 @@ public class LabelRestServiceTest extends RestServiceTest {
 				.andExpect(jsonPath("$.length()").value(0));
 	}
 
+	/*
+	 * --------------------------------------------
+	 * GET: /labels?type=
+	 * --------------------------------------------
+	 */
 	@Test
 	public void getLabels_Query_Type() throws Exception {
 		Label lbl = getLabel();
@@ -227,9 +253,14 @@ public class LabelRestServiceTest extends RestServiceTest {
 	public void getLabels_No_Query_Value() throws Exception {
 		mvc.perform(get("/labels?type=").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
-				.andExpect(content().string(Matchers.containsString("type")));
+				.andExpect(content().string(VM.msg("param.type.required")));
 	}
 
+	/*
+	 * --------------------------------------------
+	 * POST: /labels
+	 * --------------------------------------------
+	 */
 	@Test
 	public void createLabel() throws Exception {
 		
@@ -256,20 +287,42 @@ public class LabelRestServiceTest extends RestServiceTest {
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
 	}
-
-	@Test
-	public void createLabel_Invalid_Data() throws Exception {		
-		Mockito.when(typeRepo.findById(1L)).thenReturn(new LabelType());		
-		LabelData data = getLabelData(); data.setName("");		
-		String content = jsonMapper.writeValueAsString(data);
+	
+	private void invalidDataRequest(String content, String message) throws Exception {
 		mvc.perform(post("/labels")
 				.contentType(MediaType.APPLICATION_JSON).content(content)
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$[0]").value("Name is missing"));
+				.andExpect(jsonPath("$[0]").value(message));
 	}
 
+	@Test
+	public void createLabel_Invalid_Data_Empty_Name() throws Exception {		
+		LabelData label = getLabelData(); label.setName("");
+		String content = jsonMapper.writeValueAsString(label);
+		invalidDataRequest(content, VM.msg("label.name.missing"));		
+	}
+
+	@Test
+	public void createLabel_Invalid_Data_No_Type() throws Exception {		
+		LabelData label = getLabelData(); label.setType(null);
+		String content = jsonMapper.writeValueAsString(label);
+		invalidDataRequest(content, VM.msg("label.type.missing"));			
+	}
+
+	@Test
+	public void createLabel_Invalid_Data_No_Type_Id() throws Exception {		
+		LabelData label = getLabelData(); label.getType().setId(null);;
+		String content = jsonMapper.writeValueAsString(label);
+		invalidDataRequest(content, VM.msg("label.type.missing"));			
+	}
+
+	/*
+	 * --------------------------------------------
+	 * PUT: /labels/{id}
+	 * --------------------------------------------
+	 */
 	@Test
 	public void updateLabel() throws Exception {		
 		Mockito.when(lblRepo.findById(1L)).thenReturn(new Label().setId(1L));		
@@ -301,9 +354,14 @@ public class LabelRestServiceTest extends RestServiceTest {
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$[0]").value("Name is missing"));
+				.andExpect(jsonPath("$[0]").value(VM.msg("label.name.missing")));
 	}
 
+	/*
+	 * --------------------------------------------
+	 * DELETE: /labels/{id}
+	 * --------------------------------------------
+	 */
 	@Test
 	public void deleteLabel() throws Exception {	
 		Mockito.when(lblRepo.findById(1L)).thenReturn(new Label().setId(1L));		
@@ -317,7 +375,12 @@ public class LabelRestServiceTest extends RestServiceTest {
 		mvc.perform(delete("/labels/1"))
 				.andExpect(status().isNotFound());
 	}
-	
+
+	/*
+	 * --------------------------------------------
+	 * PUT: /labels/{parent_id}/child/{child_id}
+	 * --------------------------------------------
+	 */	
 	@Test
 	public void addChild() throws Exception {	
 		Label p = new Label();
@@ -344,7 +407,12 @@ public class LabelRestServiceTest extends RestServiceTest {
 		mvc.perform(put("/labels/1/child/2"))
 			.andExpect(status().isNotFound());
 	}
-	
+
+	/*
+	 * --------------------------------------------
+	 * DELETE: /labels/{parent_id}/child/{child_id}
+	 * --------------------------------------------
+	 */	
 	@Test
 	public void removeChild() throws Exception {	
 		Label p = new Label();

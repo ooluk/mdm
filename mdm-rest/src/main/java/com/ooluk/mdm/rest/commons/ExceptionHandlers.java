@@ -1,16 +1,17 @@
 package com.ooluk.mdm.rest.commons;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.ooluk.mdm.rest.validation.ValidationFailedException;
-
 /**
- * Exception handler for all controller thrown exceptions.
  * 
  * @author Siddhesh Prabhu
  * @since  1.0
@@ -32,9 +33,14 @@ public class ExceptionHandlers {
 	}
 	
 	// ValidationFailed ==> 400
-	@ExceptionHandler(ValidationFailedException.class)
-    public ResponseEntity<List<String>> customHandler(ValidationFailedException ex) {
-	    return new ResponseEntity<>(ex.getValidationResponse().getFailureReasons(), HttpStatus.BAD_REQUEST);
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<List<String>> customHandler(MethodArgumentNotValidException ex) {
+		List<String> result = new ArrayList<>();
+		BindingResult binding = ex.getBindingResult();
+		for (FieldError err : binding.getFieldErrors()) {
+			result.add(err.getDefaultMessage());
+		}
+	    return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 	}
 	
 	// BadRequestException ==> 400

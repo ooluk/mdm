@@ -1,11 +1,12 @@
 package com.ooluk.mdm.rest.commons;
 
+import javax.validation.Validator;
+
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ooluk.mdm.data.meta.MetaObjectType;
-import com.ooluk.mdm.rest.validation.DataValidator;
 
 /**
  * Superclass for all REST services.
@@ -21,7 +22,7 @@ public abstract class RestService {
 	protected Mapper mapper;
 	
 	@Autowired
-	protected DataValidator validator;
+	protected Validator validator;
 
 
 	/**

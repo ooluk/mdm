@@ -32,8 +32,7 @@ import com.ooluk.mdm.data.meta.app.LabelTypeRepository;
 public abstract class RestServiceTest {
 	
     @Autowired
-    protected WebApplicationContext wac;
-	
+    protected WebApplicationContext wac;	
 	@Autowired
 	private RequestMappingHandlerMapping requestMapping;
     
@@ -50,14 +49,14 @@ public abstract class RestServiceTest {
 	static class ContextConfiguration {
 
 		@Bean
-		public Mapper getDozerMapper() {
+		public Mapper dozerMapper() {
 			DozerBeanMapper mapper = new DozerBeanMapper();
 			mapper.setMappingFiles(Arrays.asList(new String[]{"dozer.xml"}));
 			return mapper;
 		}
 		
 		@Bean 
-		public DynamicPropertiesCache getDynamicPropertiesCache() {
+		public DynamicPropertiesCache dynamicPropertiesCache() {
 			DynamicPropertiesCache cache = new DynamicPropertiesCache();
 			DynamicPropertyRepository repository = Mockito.mock(DynamicPropertyRepository.class);
 			cache.setRepository(repository);
@@ -65,8 +64,15 @@ public abstract class RestServiceTest {
 			return cache; 
 		}	
 		
-		@Bean public LabelTypeRepository getLabelTypeRepository() { return null; }		
-		@Bean public LabelRepository getLabelRepository() { return null; }
+		/*
+		@Bean
+		public LocalValidatorFactoryBean validationFactoryBean() {
+			return new LocalValidatorFactoryBean();
+		}
+		*/
+		
+		@Bean public LabelTypeRepository labelTypeRepository() { return null; }		
+		@Bean public LabelRepository labelRepository() { return null; }
 	}
 	
 	@Before

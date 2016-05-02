@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,6 @@ import com.ooluk.mdm.rest.app.dto.LabelTypeData;
 import com.ooluk.mdm.rest.commons.MetaObjectNotFoundException;
 import com.ooluk.mdm.rest.commons.RestService;
 import com.ooluk.mdm.rest.dto.RestResponse;
-import com.ooluk.mdm.rest.validation.ValidationFailedException;
 
 /**
  * REST service for label type processing.
@@ -38,8 +37,6 @@ import com.ooluk.mdm.rest.validation.ValidationFailedException;
 @RestController
 @RequestMapping ( value = "/labeltypes" )
 public class LabelTypeRestService extends RestService {
-	
-	private static Logger LOGGER = LogManager.getLogger();
 
 	@Autowired
 	private LabelTypeRepository typeRepository;
@@ -56,7 +53,10 @@ public class LabelTypeRestService extends RestService {
 	 *             if a label type with the specified ID is not found
 	 */
 	@Transactional (readOnly = true)
-	@RequestMapping ( value = "/{id}", method = GET, produces = APPLICATION_JSON_VALUE )
+	@RequestMapping ( 
+			value = "/{id}", 
+			method = GET, 
+			produces = APPLICATION_JSON_VALUE )
 	public RestResponse<LabelTypeData> getTypeById(@PathVariable ( "id" ) Long id) {
 
 		LabelType type= typeRepository.findById(id);
@@ -76,7 +76,9 @@ public class LabelTypeRestService extends RestService {
 	 * @return list of label types
 	 */
 	@Transactional (readOnly = true)
-	@RequestMapping ( method = GET, produces = APPLICATION_JSON_VALUE )
+	@RequestMapping ( 
+			method = GET, 
+			produces = APPLICATION_JSON_VALUE )
 	public List<RestResponse<LabelTypeData>> getTypes() {		
 		return getLabelTypeDataList(typeRepository.getAll());
 	}
@@ -88,29 +90,19 @@ public class LabelTypeRestService extends RestService {
 	 *            label type data
 	 *            
 	 * @return the created label type
-	 * 
-	 * @throws ValidationFailedException
-	 *             if validation of the label type data fails
 	 *             
 	 */
 	@Transactional
-	@RequestMapping ( method = POST, consumes = APPLICATION_JSON_VALUE )
+	@RequestMapping ( 
+			method = POST, 
+			consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelTypeData>> createType( 
-			@RequestBody LabelTypeData data) {
-		
-		validator.validate(data);
-		
+			@RequestBody @Valid LabelTypeData data) {
+				
 		LabelType type = mapper.map(data, LabelType.class);
 		typeRepository.create(type);
 		
-		RestResponse<LabelTypeData> body = null;
-		try {
-			body = this.getTypeById(type.getId());
-		} catch (MetaObjectNotFoundException e) {
-			LOGGER.error(e.getMessage(), e);
-			throw new RuntimeException("ERROR: Unable to fetch created label type "
-					+ "(ID=" + type.getId() + ")");
-		}
+		RestResponse<LabelTypeData> body = this.getTypeById(type.getId());
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("location", LabelTypeLinks.buildSelfLink(type.getId()).toString());
 		return new ResponseEntity<>(body, headers, HttpStatus.CREATED);
@@ -128,20 +120,20 @@ public class LabelTypeRestService extends RestService {
 	 * 
 	 * @throws MetaObjectNotFoundException
 	 *             if a label type with the specified ID is not found
-	 * @throws ValidationFailedException
-	 *             if validation of the label type data fails
 	 * 
 	 */
 	@Transactional
-	@RequestMapping ( value = "/{id}", method = PUT, consumes = APPLICATION_JSON_VALUE )
+	@RequestMapping ( 
+			value = "/{id}", 
+			method = PUT, 
+			consumes = APPLICATION_JSON_VALUE )
 	public ResponseEntity<RestResponse<LabelTypeData>> updateType( 
-			@PathVariable("id") Long id, @RequestBody LabelTypeData data) {
+			@PathVariable("id") Long id, @RequestBody @Valid LabelTypeData data) {
 		
 		LabelType type = typeRepository.findById(id);
 		if (type == null) {
 			notFound(MetaObjectType.LABEL_TYPE, id);
 		}		
-		validator.validate(data);
 		
 		type.setName(data.getName());
 		type.setProperties(data.getProperties());
@@ -164,7 +156,9 @@ public class LabelTypeRestService extends RestService {
 	 * 
 	 */
 	@Transactional
-	@RequestMapping ( value = "/{id}", method = DELETE )
+	@RequestMapping ( 
+			value = "/{id}", 
+			method = DELETE )
 	public ResponseEntity<Void> deleteType(@PathVariable("id") Long id) {
 		
 		LabelType type = typeRepository.findById(id);

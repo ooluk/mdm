@@ -1,7 +1,8 @@
 package com.ooluk.mdm.rest.app.dto;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.ooluk.mdm.rest.dto.MetaObjectData;
-import com.ooluk.mdm.rest.validation.Validatable;
 
 /**
  * 
@@ -9,8 +10,9 @@ import com.ooluk.mdm.rest.validation.Validatable;
  * @since  1.0
  *
  */
-public class LabelTypeData extends MetaObjectData implements Validatable<LabelTypeData>{
+public class LabelTypeData extends MetaObjectData {
 
+	@NotEmpty (message = "{labeltype.name.missing}")
 	private String name;
 	
 	public String getName() {

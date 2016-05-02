@@ -28,6 +28,7 @@ import com.ooluk.mdm.rest.app.dto.LabelTypeData;
 import com.ooluk.mdm.rest.test.RestServiceTest;
 import com.ooluk.mdm.rest.test.TestData;
 import com.ooluk.mdm.rest.test.TestUtils;
+import com.ooluk.mdm.rest.validation.VM;
 
 @ContextConfiguration
 public class LabelTypeRestServiceTest extends RestServiceTest {
@@ -68,6 +69,11 @@ public class LabelTypeRestServiceTest extends RestServiceTest {
 		return type;
 	}
 
+	/*
+	 * --------------------------------------------
+	 * GET: /labeltypes/{id}
+	 * --------------------------------------------
+	 */
 	@Test
 	public void getTypeById() throws Exception {
 		Mockito.when(typeRepo.findById(1L)).thenReturn(getLabelType());
@@ -109,7 +115,12 @@ public class LabelTypeRestServiceTest extends RestServiceTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.length()").value(0));
 	}
-	
+
+	/*
+	 * --------------------------------------------
+	 * POST: /labeltypes
+	 * --------------------------------------------
+	 */
 	@Test
 	public void createType() throws Exception {
 		Mockito.when(typeRepo.findById(1L)).thenReturn(getLabelType());
@@ -119,11 +130,10 @@ public class LabelTypeRestServiceTest extends RestServiceTest {
 				.andExpect(status().isCreated())
 				.andExpect(header().string("location", Matchers.endsWith("labeltypes/1")))
 				.andExpect(jsonPath("$.content.id").value(1));
-	}
-
+	} 
+	
 	@Test
 	public void createType_Invalid_Data() throws Exception {
-		Mockito.when(typeRepo.findById(1L)).thenReturn(getLabelType());	
 		LabelTypeData data = getTypeData(); data.setName("");		
 		String content = jsonMapper.writeValueAsString(data);
 		mvc.perform(post("/labeltypes")
@@ -131,9 +141,14 @@ public class LabelTypeRestServiceTest extends RestServiceTest {
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$[0]").value("Name is missing"));
+				.andExpect(jsonPath("$[0]").value(VM.msg("labeltype.name.missing")));
 	}
-	
+
+	/*
+	 * --------------------------------------------
+	 * PUT: /labeltypes/{id}
+	 * --------------------------------------------
+	 */	
 	@Test
 	public void updateType() throws Exception {
 		Mockito.when(typeRepo.findById(1L)).thenReturn(getLabelType());
@@ -155,16 +170,20 @@ public class LabelTypeRestServiceTest extends RestServiceTest {
 	
 	@Test
 	public void updateType_Invalid_Data() throws Exception {
-		Mockito.when(typeRepo.findById(1L)).thenReturn(getLabelType());	
 		LabelTypeData data = getTypeData(); data.setName("");
 		String json = jsonMapper.writeValueAsString(data);
 		mvc.perform(put("/labeltypes/1").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.length()").value(1))
-				.andExpect(jsonPath("$[0]").value("Name is missing"));;
+				.andExpect(jsonPath("$[0]").value(VM.msg("labeltype.name.missing")));;
 	}
-	
+
+	/*
+	 * --------------------------------------------
+	 * DELETE: /labeltypes/{id}
+	 * --------------------------------------------
+	 */		
 	@Test
 	public void deleteType() throws Exception {
 		Mockito.when(typeRepo.findById(1L)).thenReturn(getLabelType());

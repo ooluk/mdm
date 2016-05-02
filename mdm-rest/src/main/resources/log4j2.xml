@@ -18,7 +18,7 @@
 		<Logger name="com.ooluk.mdm" level="trace" additivity="false">
 			<AppenderRef ref="File" />
 		</Logger>
-		<Root level="error">
+		<Root level="trace">
 			<AppenderRef ref="File" />
 		</Root>
 	</Loggers>
