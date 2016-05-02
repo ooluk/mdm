@@ -3,6 +3,7 @@ package com.ooluk.mdm.rest.dto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.ooluk.mdm.data.meta.DynamicProperties;
+import com.ooluk.mdm.rest.validation.DynamicValidated;
 
 /**
  * Common attributes for all meta objects. 
@@ -17,6 +18,7 @@ public abstract class MetaObjectData {
 	
 	@JsonSerialize(using = DynamicPropertiesJsonSerializer.class)
 	@JsonDeserialize(using = DynamicPropertiesJsonDeserializer.class)
+	@DynamicValidated
 	private DynamicProperties properties;
 	
 	public Long getId() {

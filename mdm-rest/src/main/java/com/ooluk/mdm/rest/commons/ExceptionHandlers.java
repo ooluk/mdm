@@ -20,30 +20,40 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ExceptionHandlers {
 	
-	// MetaObjectNotFound ==> 404
+	/**
+	 * MetaObjectNotFound ==> 404
+	 */
 	@ExceptionHandler(MetaObjectNotFoundException.class)
     public ResponseEntity<String> customHandler(MetaObjectNotFoundException ex) {
 	    return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
 	
-	// DuplicateKey ==> 409
+	/**
+	 * DuplicateKey ==> 409
+	 */
 	@ExceptionHandler(MetaObjectExistsException.class)
     public ResponseEntity<String> customHandler(MetaObjectExistsException ex) {
 	    return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
 	}
 	
-	// ValidationFailed ==> 400
+	/**
+	 * ValidationFailed ==> 400
+	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<String>> customHandler(MethodArgumentNotValidException ex) {
 		List<String> result = new ArrayList<>();
 		BindingResult binding = ex.getBindingResult();
 		for (FieldError err : binding.getFieldErrors()) {
+			System.out.println(err.getField());
 			result.add(err.getDefaultMessage());
 		}
 	    return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 	}
+
 	
-	// BadRequestException ==> 400
+	/**
+	 * BadRequestException ==> 400
+	 */
 	@ExceptionHandler(BadRequestException.class)
     public ResponseEntity<String> customHandler(BadRequestException ex) {
 	    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
